@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İç Mimarlık Eğitiminde Yapay Zekâ Destekli Mekânsal Kurgu</title>
+<style>
+
+
+:root{
+  --bg:#efebe4;
+  --bg2:#f7f3ed;
+  --card:#fbf8f2;
+  --card-2:#ffffff;
+  --muted:#746b63;
+  --text:#261f1a;
+  --line:#cfc2b2;
+  --accent:#a11d1f;
+  --accent-dark:#7c1517;
+  --accent-soft:#f4dedd;
+  --gold:#d8a928;
+  --gold-soft:#f5ead0;
+  --shadow:0 18px 40px rgba(48,34,24,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  background:
+    radial-gradient(circle at top left, rgba(209,174,58,.10), transparent 22%),
+    linear-gradient(180deg,#f4efe7 0%, #efe9e0 52%, #f8f4ee 100%);
+  color:var(--text)
+}
+a{color:inherit}
+header{
+  padding:22px 28px 14px;
+  background:rgba(247,243,237,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(161,29,31,.10);
+  position:sticky;top:0;z-index:40
+}
+.header-top{max-width:1380px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand-wrap{display:flex;align-items:center;gap:14px}
+.brand-badge{
+  width:54px;height:54px;border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),#c54d47);
+  color:#fff;font-size:23px;font-weight:700;
+  box-shadow:0 10px 24px rgba(161,29,31,.18)
+}
+.brand-text h1{margin:0;font-size:28px;letter-spacing:.02em}
+.brand-text p{margin:4px 0 0;color:var(--muted);font-size:14px;font-family:Arial,Helvetica,sans-serif}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+.pill{
+  border:1px solid rgba(161,29,31,.18);
+  background:#fff;
+  color:var(--accent-dark);
+  border-radius:999px;
+  padding:10px 14px;
+  font:600 12px/1 Arial,Helvetica,sans-serif;
+  letter-spacing:.04em;
+  text-transform:uppercase
+}
+.hero-shell{max-width:1380px;margin:0 auto;padding:26px 24px 0}
+.hero{
+  display:grid;grid-template-columns:1.2fr .9fr;gap:22px;align-items:stretch
+}
+.hero-main,.hero-side,.overview,.feature-card,.mini-diagram,.legend-card,.tab-intro{
+  background:rgba(251,248,242,.94);
+  border:1px solid rgba(120,78,46,.14);
+  box-shadow:var(--shadow)
+}
+.hero-main{
+  border-radius:28px;padding:32px;position:relative;overflow:hidden
+}
+.hero-main:before{
+  content:"";position:absolute;inset:auto -40px -40px auto;width:220px;height:220px;
+  background:radial-gradient(circle, rgba(216,169,40,.18), transparent 68%);
+}
+.kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid rgba(161,29,31,.18);
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  border-radius:999px;padding:10px 14px;
+  font:700 12px/1 Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.08em
+}
+.hero-main h2{font-size:42px;line-height:1.08;margin:18px 0 16px;max-width:12ch}
+.hero-main p{font-size:17px;line-height:1.75;color:#4d443d;max-width:68ch}
+.hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.hero-point{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px
+}
+.hero-point strong{display:block;color:var(--accent-dark);font-size:13px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.hero-point span{font-size:15px;line-height:1.5}
+.hero-side{border-radius:28px;padding:24px;display:grid;gap:16px}
+.side-title{font:700 13px/1 Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-dark)}
+.problem-box,.question-box,.method-box{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px
+}
+.problem-box h3,.question-box h3,.method-box h3{margin:0 0 10px;font-size:24px;color:var(--accent-dark)}
+.problem-box p,.question-box li,.method-box p{font-size:15px;line-height:1.65;color:#4d443d}
+.question-box ul{margin:0;padding-left:18px}
+.overview{
+  margin-top:22px;border-radius:28px;padding:28px
+}
+.overview-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.overview-head h3{margin:0;font-size:30px}
+.overview-head p{margin:6px 0 0;color:var(--muted);font:14px/1.6 Arial,Helvetica,sans-serif;max-width:72ch}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.feature-card{border-radius:22px;padding:20px}
+.feature-card .num{
+  width:42px;height:42px;border-radius:14px;background:var(--gold-soft);color:#7d5b09;
+  display:grid;place-items:center;font:700 18px/1 Arial,Helvetica,sans-serif;margin-bottom:14px
+}
+.feature-card h4{margin:0 0 8px;font-size:20px;color:var(--accent-dark)}
+.feature-card p{margin:0;color:#554b44;line-height:1.65;font-size:15px}
+.diagram-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
+.mini-diagram,.legend-card{border-radius:24px;padding:22px}
+.mini-diagram h4,.legend-card h4{margin:0 0 14px;font-size:22px}
+.flow{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start
+}
+.flow-col{display:grid;gap:12px}
+.flow-tag{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:999px;
+  background:var(--gold-soft);
+  color:#7d5b09;
+  font:700 12px/1 Arial,Helvetica,sans-serif;
+  text-transform:uppercase;letter-spacing:.06em
+}
+.flow-box{
+  background:#fff;border:1.5px dashed #c9b8a5;border-radius:18px;padding:14px 14px 15px;
+}
+.flow-box strong{display:block;margin-bottom:8px;color:var(--accent-dark);font-size:17px}
+.flow-box p,.legend-card li{margin:0;color:#544a43;line-height:1.65;font-size:14px}
+.legend-card ul{margin:0;padding-left:18px}
+.nav-shell{max-width:1380px;margin:22px auto 0;padding:0 24px}
+nav{
+  display:flex;gap:10px;overflow:auto;padding:12px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(120,78,46,.12);
+  border-radius:22px;
+  position:sticky;top:96px;z-index:29;
+  box-shadow:0 12px 30px rgba(70,50,32,.06)
+}
+nav button{
+  border:none;background:#f2ece5;padding:12px 16px;border-radius:999px;cursor:pointer;
+  font:600 13px/1 Arial,Helvetica,sans-serif;white-space:nowrap;color:#4d443d;transition:.2s ease
+}
+nav button:hover{transform:translateY(-1px)}
+nav button.active{background:linear-gradient(135deg,var(--accent),#c54d47);color:#fff;box-shadow:0 10px 18px rgba(161,29,31,.18)}
+main{max-width:1380px;margin:0 auto;padding:22px 24px 36px}
+.tab{display:none}
+.tab.active{display:block}
+.tab-intro{
+  border-radius:24px;padding:20px 22px;margin-bottom:16px
+}
+.tab-intro h2{margin:0 0 6px;font-size:26px;color:var(--accent-dark)}
+.tab-intro p{margin:0;color:#5c534b;line-height:1.7;font-size:15px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1.2fr 1fr}
+.g22{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{
+  background:rgba(255,255,255,.90);
+  border:1px solid rgba(120,78,46,.12);
+  border-radius:24px;padding:20px;box-shadow:var(--shadow)
+}
+.card h2{margin:0 0 8px 0;font-size:22px;color:var(--accent-dark)}
+.sub{margin:0 0 12px 0;color:var(--muted);font-size:12px;font-family:Arial,Helvetica,sans-serif}
+label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px;font-family:Arial,Helvetica,sans-serif}
+input,select,textarea{
+  width:100%;padding:11px 12px;border:1px solid #dacbbb;border-radius:14px;background:#fff;
+  font:14px/1.4 Arial,Helvetica,sans-serif;color:#322923
+}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{
+  border:none;background:linear-gradient(135deg,var(--accent),#c54d47);color:#fff;padding:11px 16px;border-radius:14px;cursor:pointer;
+  font:600 13px/1 Arial,Helvetica,sans-serif;box-shadow:0 10px 18px rgba(161,29,31,.16)
+}
+.btn.secondary{background:linear-gradient(135deg,#b98e18,#d5b24a);color:#362806}
+.btn.ghost{background:#f3ede5;color:#2a211d;box-shadow:none}
+.btn.warn{background:linear-gradient(135deg,#8f1719,#c63438)}
+.stat{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,246,240,.96));
+  border:1px solid rgba(120,78,46,.12);
+  border-radius:22px;padding:18px;box-shadow:var(--shadow)
+}
+.stat .v{font-size:32px;font-weight:700;color:var(--accent-dark)}
+.stat .k{font-size:12px;color:var(--muted);font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;font-family:Arial,Helvetica,sans-serif}
+th,td{padding:11px 10px;border-bottom:1px solid #eee5d9;text-align:left;vertical-align:top}
+th{background:#fbf7f1;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#f5ede5;font-size:11px;margin:2px}
+.badge.kw{background:var(--gold-soft);color:#7d5b09}
+.notice{background:#fff6ea;border:1px solid #f0d4a8;color:#885d08;padding:11px 13px;border-radius:14px;font-size:12px;font-family:Arial,Helvetica,sans-serif}
+.empty{padding:26px;text-align:center;color:var(--muted);font-family:Arial,Helvetica,sans-serif}
+.chartbox{position:relative;height:320px}
+.chartbox.sm{height:230px}
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.preview{border:1px solid rgba(120,78,46,.12);border-radius:18px;background:#fff;padding:12px}
+.preview h4{margin:0 0 8px 0;font-size:15px;color:var(--accent-dark)}
+.img-frame{height:160px;background:#f5efe7;border:1px solid #eadfce;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:8px}
+.img-frame img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.kws{margin-top:8px}
+.rubric-card{border:1px solid rgba(120,78,46,.12);border-radius:22px;padding:16px;background:#fff;margin-bottom:14px;box-shadow:var(--shadow)}
+.rubric-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.rubric-title{font-size:20px;font-weight:700;color:var(--accent-dark)}
+.rubric-form{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;margin-top:12px}
+.small{font-size:12px;color:var(--muted);font-family:Arial,Helvetica,sans-serif}
+.finding{background:linear-gradient(180deg,#fff,#fbf7f1);border-left:4px solid var(--accent);padding:14px 16px;border-radius:16px;margin-bottom:12px;line-height:1.75}
+hr.sep{border:none;border-top:1px solid #eadfce;margin:16px 0}
+footer{
+  max-width:1380px;margin:0 auto 34px;padding:0 24px
+}
+.footer-card{
+  border-radius:26px;background:#2c201b;color:#f7efe4;padding:24px 26px;box-shadow:var(--shadow)
+}
+.footer-card h3{margin:0 0 10px;font-size:26px}
+.footer-card p{margin:0;color:#e4d8cb;line-height:1.75;font-family:Arial,Helvetica,sans-serif}
+@media(max-width:1150px){
+  .hero,.diagram-grid,.g2,.g22,.g3,.g4,.row,.row3,.preview-grid,.rubric-form,.feature-grid,.flow,.hero-points{grid-template-columns:1fr}
+  nav{top:86px}
+  .hero-main h2{font-size:34px}
+}
+
+
+
+.back-home{display:none}
+.header-top{justify-content:flex-start}
+nav{position:static;top:auto}
+.hero-shell{padding-top:30px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.cta-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:0 20px;border-radius:14px;
+  text-decoration:none;font:700 14px/1 Arial,Helvetica,sans-serif;
+}
+.cta-primary{background:linear-gradient(135deg,var(--accent),#c54d47);color:#fff;box-shadow:0 10px 18px rgba(161,29,31,.18)}
+.cta-secondary{background:#fff;color:var(--accent-dark);border:1px solid rgba(161,29,31,.18)}
+.mainpage-note{max-width:1380px;margin:0 auto;padding:0 24px}
+.mainpage-note .tab-intro{margin-top:18px}
+footer{margin-top:8px}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <div class="brand-wrap">
+      <div class="brand-text">
+        <h1>İÇ MİMARLIK EĞİTİMİNDE YAPAY ZEKA DESTEKLİ MEKANSAL KURGU: KAVRAMSAL VE YARATICI SÜREÇLERİN DÖNÜŞÜMÜ</h1>
+        <p>Tez yazarı: Zeynep Özbölük · Tez danışmanı: İsmail Emre Kuvat · Yardımcı tez danışmanı: Mahmut Atilla Söğüt</p>
+      </div>
+    </div>
+</div>
+</header>
+
+<section class="hero-shell">
+  <div class="hero">
+    <article class="hero-main">
+      <span class="kicker">Tez Arayüzü</span>
+      <h2>İç mimarlık öğrencilerinin kavramsal düşünme ve yaratıcı mekân üretim süreçlerini izleyen araştırma paneli</h2>
+      <p>
+        Bu arayüz, iç mimarlık eğitiminde üretken yapay zekâ araçlarının tasarım stüdyosu sürecine etkisini
+        inceleyen tez çalışmasının dijital sunum ve analiz alanı olarak kurgulanmıştır. Problem tanımı,
+        hipotez, araştırma soruları, deneysel stüdyo akışı, prompt çözümlemeleri, rubrik değerlendirmeleri
+        ve karşılaştırmalı bulgular aynı yapı içinde bir araya getirilmiştir.
+      </p>
+      <div class="cta-row">
+        <a class="cta-link cta-primary" href="analiz_eslenmis_final.html">Analiz Sistemine Geç</a>
+        <a class="cta-link cta-secondary" href="#moduller">Ana Modülleri İncele</a>
+      </div>
+      <div class="hero-points">
+        <div class="hero-point">
+          <strong>Problem</strong>
+          <span>Yapay zekâ destekli tasarım süreçlerinin iç mimarlık öğrencilerinin kavramsal düşünme ve yaratıcı mekân üretimi üzerindeki etkisi henüz net değildir.</span>
+        </div>
+        <div class="hero-point">
+          <strong>Hipotez</strong>
+          <span>Üretken yapay zekâ, geleneksel stüdyo pratiğine kıyasla öğrencilerin kavramsal ve yaratıcı düşünme becerilerini geliştirebilir.</span>
+        </div>
+        <div class="hero-point">
+          <strong>Odak</strong>
+          <span>Prompt kalitesi, görsel çıktı niteliği, zamansal kurgu ve kavramsal derinlik arasındaki ilişkiyi karşılaştırmalı olarak analiz etmek.</span>
+        </div>
+      </div>
+    </article>
+
+    <aside class="hero-side">
+      <div class="problem-box">
+        <div class="side-title">Araştırma Soruları</div>
+        <h3>Tez Sorunsalı</h3>
+        <ul>
+          <li>Yapay zekâ destekli tasarım süreci kavramsal düşünmeyi nasıl etkiler?</li>
+          <li>Prompt-görsel ilişkisi yaratıcı çıktıyı nasıl dönüştürür?</li>
+          <li>Geçmiş–günümüz–gelecek ekseninde mekânsal dil nasıl değişir?</li>
+        </ul>
+      </div>
+      <div class="method-box">
+        <div class="side-title">Yöntem Yapısı</div>
+        <h3>Karma ve Deneysel</h3>
+        <p>
+          Literatür taraması, deneysel stüdyo modeli, süreç gözlemleri, içerik analizi ve rubrik ile puanlama
+          birlikte kullanılarak öğrencilerin düşünsel dönüşümü ve tasarım kararlarının evrimi değerlendirilir.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <section id="moduller" class="overview">
+    <div class="overview-head">
+      <div>
+        <h3>Tez Strüktüründen Beslenen Ana Modüller</h3>
+        <p>
+          Aşağıdaki yapı, tez kapsamında kullanılan tez şemasındaki problem, hipotez, kavramlar, deneysel uygulama süreci ve sonuç
+          ilişkisini esas alır. Sistem yalnızca veri toplamaz; aynı zamanda çalışmanın kuramsal ve pedagojik omurgasını
+          dijital bir tez paneline dönüştürür.
+        </p>
+      </div>
+      <span class="pill">Şekil 1.1 ve 1.2 referanslı arayüz</span>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="num">01</div>
+        <h4>Veri Girişi</h4>
+        <p>Öğrenci kodu, seçilen eser, kullanılan yapay zekâ araçları, vize-final promptları ve görseller tek merkezde toplanır.</p>
+      </div>
+      <div class="feature-card">
+        <div class="num">02</div>
+        <h4>Kavramsal İzleme</h4>
+        <p>Prompt metinleri; zamansal kurgu, kavramsal çeşitlilik, anlatı yoğunluğu ve anahtar kavramlar üzerinden okunur.</p>
+      </div>
+      <div class="feature-card">
+        <div class="num">03</div>
+        <h4>Deneysel Süreç</h4>
+        <p>Eser seçimi, yönerge geliştirme, ilk-son çıktı toplama ve gözlem süreci; tezdeki deneysel akışa uygun ilerler.</p>
+      </div>
+      <div class="feature-card">
+        <div class="num">04</div>
+        <h4>Rubrik ve Bulgular</h4>
+        <p>Kavramsal derinlik, prompt niteliği, yapay zekâ kullanımı ve yaratıcılık düzeyi karşılaştırmalı biçimde görünür olur.</p>
+      </div>
+    </div>
+
+    <div class="diagram-grid">
+      <div class="mini-diagram">
+        <h4>Deneysel Uygulama Süreci</h4>
+        <div class="flow">
+          <div class="flow-col">
+            <span class="flow-tag">Araştırma Zemini</span>
+            <div class="flow-box">
+              <strong>Literatür Taraması</strong>
+              <p>İç mimarlık eğitimi, kavramsal düşünme, üretken yapay zekâ ve temsil pratikleri birlikte ele alınır.</p>
+            </div>
+            <div class="flow-box">
+              <strong>Tez Odağının Belirlenmesi</strong>
+              <p>Yapay zekâ destekli mekânsal kurgunun pedagojik ve yaratıcı etkisi araştırmanın çekirdeğini oluşturur.</p>
+            </div>
+          </div>
+          <div class="flow-col">
+            <span class="flow-tag">Stüdyo Kurgusu</span>
+            <div class="flow-box">
+              <strong>Ana ve Ön Çalışma</strong>
+              <p>Katılımcı grubunun belirlenmesi, ders içeriğinin hazırlanması ve süreç yönergesinin kurulması.</p>
+            </div>
+            <div class="flow-box">
+              <strong>İlk / Son Çıktılar</strong>
+              <p>Öğrencilerin ilk tasarım ürünleri ile yapay zekâ destekli son ürünleri birlikte değerlendirilir.</p>
+            </div>
+          </div>
+          <div class="flow-col">
+            <span class="flow-tag">Analiz ve Sonuç</span>
+            <div class="flow-box">
+              <strong>İçerik Analizi</strong>
+              <p>Prompt metinleri, görseller ve süreç raporları üzerinden kavramsal dönüşüm okunur.</p>
+            </div>
+            <div class="flow-box">
+              <strong>Rubrik ile Puanlama</strong>
+              <p>Hipotezin sınanması için nicel destekli nitel değerlendirme yapısı kullanılır.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend-card">
+        <h4>Kavramsal Çekirdek</h4>
+        <ul>
+          <li>Üretken yapay zekâ, yalnızca teknik bir araç değil; düşünceyi hızlandıran temsil ortamı olarak ele alınır.</li>
+          <li>Kavramsal düşünme, öğrenci üretimlerinin niteliğini belirleyen ana eksen olarak değerlendirilir.</li>
+          <li>İç mimarlık eğitimi, sezgisel stüdyo pratiği ile hızlı geri bildirim üreten yeni araçlar arasında yeniden kurulur.</li>
+          <li>Sistem, prompt metinlerinin yalnızca kelime sayısını değil; anlam, zaman ve yaratıcı çeşitlilik ilişkisini de izler.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</section>
+<footer>
+  <div class="footer-card">
+    <h3>Tez Bilgisi</h3>
+    <p>İç Mimarlık Eğitiminde Yapay Zeka Destekli Mekansal Kurgu: Kavramsal ve Yaratıcı Süreçlerin Dönüşümü</p>
+    <p style="margin-top:10px">
+      Tez Yazarı: Zeynep Özbölük<br>
+      Tez Danışmanı: İsmail Emre Kuvat<br>
+      Yardımcı Tez Danışmanı: Mahmut Atilla Söğüt
+    </p>
+  </div>
+</footer>
+</body>
+</html>
