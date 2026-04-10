@@ -244,7 +244,7 @@ nav{position:static;top:auto}
 </head>
 <body>
 
-<a href="index.html" style="
+<a href="index_eslenmis_final.html" style="
 position:fixed;
 top:20px;
 left:20px;
@@ -324,6 +324,154 @@ let rubrics = {};
 let editingId = null;
 let charts = {};
 
+const EMBEDDED_STUDENTS = [
+  {
+    id:'Ö-01', artworkName:"Howl's Moving Castle", artworkType:'film',
+    tools:{text:['ChatGPT'], image:['Leonardo AI']},
+    vize:{
+      past:'Steampunk ve masalsı estetikte, küçük ev parçalarından oluşan düzensiz bir yürüyen şato, bacalardan çıkan dumanlar, mekanik ayaklar, rustik metal ve ahşap malzemeler, dramatik ışık, yeşil vadide konumlanmış fantastik yapı.',
+      present:'Modernize edilmiş yürüyen yapı, daha sade ve organize form, metal ve cam yüzeyler, şehir dokusu içinde konumlanan mekanik mimari, günümüz teknolojisi ile uyarlanmış hibrit yapı.',
+      future:'Gelecekte gelişmiş yapay zekâ ile çalışan otonom yürüyen yapı, organik ve akışkan formlar, ışıkla entegre yüzeyler, sürdürülebilir enerji sistemleri, futuristik şehir içinde adaptif mimari sistem.',
+      images:{past:'o1_vize_past.jpg',present:'o1_vize_present.jpg',future:'o1_vize_future.jpg'}
+    },
+    final:{
+      past:'19. yüzyıl estetiğinde, daha kontrollü ve bütüncül steampunk yürüyen şato, dengeli kompozisyon, detaylı mekanik sistemler, ahşap ve metal uyumu, atmosferik ışık.',
+      present:'Günümüz mimarisi ile yeniden yorumlanmış yürüyen yapı, daha sade ve okunabilir form, modern malzemeler, şehir bağlamına uyumlu mekanik sistem.',
+      future:'Yapay zekâ destekli adaptif yürüyen yapı, organik ve akışkan mimari form, ışık ve enerji ile entegre yüzeyler, sürdürülebilir ve otonom sistem.',
+      images:{past:'o1_final_past.jpg',present:'o1_final_present.jpg',future:'o1_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-02', artworkName:'UP', artworkType:'film',
+    tools:{text:['ChatGPT'], image:['Adobe Firefly']},
+    vize:{
+      past:'Ahşap, sıcak renklerde, nostaljik Amerikan banliyö evi, anılarla dolu iç mekan, eski mobilyalar, duygusal atmosfer, sıcak ışık, Ellie ve Carl’ın yaşam izlerini taşıyan ev.',
+      present:'Modern şehir içinde sıkışmış klasik ev, çevresinde yüksek yapılar, kontrast oluşturan eski ve yeni mimari, yalnızlık ve direnç teması, sadeleştirilmiş iç mekan.',
+      future:'Gökyüzünde süzülen, balonlar ile taşınan ev, hafif yapı, mobil yaşam alanı, bulutlar arasında konumlanan hayal temelli mekânsal kurgu, umut ve özgürlük hissi.',
+      images:{past:'o2_vize_past.jpg',present:'o2_vize_present.jpg',future:'o2_vize_future.jpg'}
+    },
+    final:{
+      past:'Nostaljik Amerikan evi, sıcak renk paleti, detaylı iç mekan, anılarla dolu yaşanmışlık hissi, duygusal atmosfer.',
+      present:'Modern kent içinde konumlanan korunmuş klasik ev, çevresiyle kontrast oluşturan yapı, sadeleştirilmiş ama karakterini koruyan mekan.',
+      future:'Gökyüzünde süzülen hafif yapı, mobil yaşam alanı, balon sistemleri yerine gelişmiş taşıyıcı teknolojiler, özgürlük ve hafiflik teması.',
+      images:{past:'o2_final_past.jpg',present:'o2_final_present.jpg',future:'o2_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-03', artworkName:'The Yellow House', artworkType:'sanat',
+    tools:{text:['ChatGPT'], image:['Adobe Firefly']},
+    vize:{
+      past:'1888 Arles, sarı tonların hakim olduğu taş yapı, doğrusal perspektif, sakin sokak, yalnızlık hissi, sıcak ama melankolik atmosfer.',
+      present:'Sanat galerisine dönüştürülmüş sarı ev, restore edilmiş cephe, modern kent dokusu içinde konumlanan tarihi yapı, sanatçı kimliğini yansıtan iç mekan.',
+      future:'Dijital sanat üretim merkezine dönüşmüş yapı, ışık ve renk ile etkileşimli cephe, artırılmış gerçeklik destekli sanat mekânı, deneyim odaklı tasarım.',
+      images:{past:'o3_vize_past.jpg',present:'o3_vize_present.jpg',future:'o3_vize_future.jpg'}
+    },
+    final:{
+      past:'Antik Yunan estetiği ile yeniden yorumlanmış sarı yapı, simetrik düzen, kolonlar, mitolojik figürler, dramatik ışık.',
+      present:'Modern minimalist sarı ev, temiz geometriler, geniş cam yüzeyler, kent dokusu ile uyumlu çağdaş mimari.',
+      future:'Dijital sanat üretim merkezi, interaktif yüzeyler, ışık ve veri ile değişen cephe, deneyim odaklı mekânsal kurgu.',
+      images:{past:'o3_final_past.jpg',present:'o3_final_present.jpg',future:'o3_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-04', artworkName:'Dr. Who / TARDIS', artworkType:'dizi',
+    tools:{text:['ChatGPT'], image:['Leonardo AI']},
+    vize:{
+      past:'Klasik İngiliz polis kulübesi, küçük ölçekli, sade ve kapalı form, dıştan basit ama işlevsel yapı.',
+      present:'İç mekânda genişleyen kompleks yapı, teknolojik kontrol panelleri, ışıklı yüzeyler, zaman ve mekan algısını kıran iç kurgu.',
+      future:'Sonsuz mekânsal genişlemeye sahip, yapay zekâ ile kendini yeniden tasarlayan dinamik yapı, akışkan geometriler, bilinç temelli mekânsal organizasyon.',
+      images:{past:'o4_vize_past.jpg',present:'o4_vize_present.jpg',future:'o4_vize_future.jpg'}
+    },
+    final:{
+      past:'Klasik polis kulübesi formu, sabit ve sınırlı mekânsal yapı.',
+      present:'İç mekânda genişleyen kompleks sistem, teknolojik kontrol panelleri, dinamik mekân.',
+      future:'Sonsuz genişleyen, yapay zekâ ile kendini yeniden üreten mekân, akışkan ve değişken mimari organizasyon.',
+      images:{past:'o4_final_past.jpg',present:'o4_final_present.jpg',future:'o4_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-05', artworkName:'The Castle', artworkType:'kitap',
+    tools:{text:['ChatGPT'], image:['Stable Diffusion']},
+    vize:{
+      past:'Sisli, ulaşılmaz gotik şato, yüksek duvarlar, izole ve soğuk atmosfer, karanlık tonlar.',
+      present:'Bürokratik yapıyı temsil eden karmaşık iç mekanlar, labirentimsi plan, kapalı ve baskıcı atmosfer.',
+      future:'Soyut ve tanımsız mekân, dijital ve simülasyon tabanlı yapı, gerçeklikten kopmuş sanal otorite mekânı.',
+      images:{past:'o5_vize_past.jpg',present:'o5_vize_present.jpg',future:'o5_vize_future.jpg'}
+    },
+    final:{
+      past:'Kasvetli, sisli, erişilemez şato, gotik mimari, karanlık atmosfer.',
+      present:'Bürokratik ve karmaşık iç mekanlar, labirentimsi plan, baskıcı mekânsal kurgu.',
+      future:'Soyut, dijital ve simülasyon temelli mekân, fiziksel olmayan otorite yapısı, varoluşsal boşluk hissi.',
+      images:{past:'o5_final_past.jpg',present:'o5_final_present.jpg',future:'o5_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-06', artworkName:'Sherlock Holmes', artworkType:'kitap',
+    tools:{text:['ChatGPT'], image:['Leonardo AI']},
+    vize:{
+      past:'Viktorya dönemi iç mekân, ahşap kitaplıklar, şömine, karanlık tonlar, dağınık ama işlevsel çalışma alanı.',
+      present:'Modernize edilmiş dedektif ofisi, teknolojik ekipmanlar, ekranlar, veri analiz alanları.',
+      future:'Tamamen dijital dedektiflik ortamı, holografik veri analiz sistemleri, yapay zekâ destekli suç çözme mekânı.',
+      images:{past:'o6_vize_past.jpg',present:'o6_vize_present.jpg',future:'o6_vize_future.jpg'}
+    },
+    final:{
+      past:'Viktorya dönemi detaylı iç mekân, kitaplar, şömine, klasik dedektif atmosferi.',
+      present:'Modern dedektif çalışma alanı, dijital analiz araçları, sadeleştirilmiş mekânsal kurgu.',
+      future:'Tamamen dijital ve yapay zekâ destekli analiz ortamı, holografik veri sistemleri, fiziksel mekânın minimuma indiği yapı.',
+      images:{past:'o6_final_past.jpg',present:'o6_final_present.jpg',future:'o6_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-07', artworkName:'Portrait of a Lady on Fire', artworkType:'film',
+    tools:{text:['ChatGPT'], image:['DALL·E']},
+    vize:{
+      past:'18. yüzyıl Fransız iç mekânı, mum ışığında aydınlatılmış, dramatik atmosfer, duygusal gerilim.',
+      present:'Minimalist sanat atölyesi, doğal ışık, sade iç mekân, sanat üretim süreci odaklı alan.',
+      future:'Beyaz, boş, dijital hafıza mekânı, holografik imgeler, duyguların dijital temsili, zamansız atmosfer.',
+      images:{past:'o7_vize_past.jpg',present:'o7_vize_present.jpg',future:'o7_vize_future.jpg'}
+    },
+    final:{
+      past:'Tarihsel kıyı malikanesinde mum ışığıyla aydınlatılmış iç mekân, taş kemerler, ahşap kirişler ve duygusal gerilim taşıyan atmosfer.',
+      present:'Modern sanat stüdyosu, geniş pencerelerden süzülen doğal ışık, yarım kalmış portreler ve sakin kompozisyon.',
+      future:'Yarı saydam panellerle çevrili dijital hafıza odası, holografik portre, sessiz ve törensel bir boşluk hissi.',
+      images:{past:'o7_final_past.jpg',present:'o7_final_present.jpg',future:'o7_final_future.jpg'}
+    }
+  },
+  {
+    id:'Ö-08', artworkName:'Buluşmak Üzere', artworkType:'şiir',
+    tools:{text:['ChatGPT'], image:['Adobe Firefly']},
+    vize:{
+      past:'Sundurmalı ev, sıcak ve korunaklı mekân, yağmurdan kaçış, nostaljik atmosfer.',
+      present:'Doğa ile iç içe sade yaşam alanı, deniz ve açık mekân ilişkisi, huzur ve dinginlik.',
+      future:'Toplumsal ve kamusal alan, meydan, kalabalık, kolektif deneyim ve sosyal etkileşim.',
+      images:{past:'o8_vize_past.jpg',present:'o8_vize_present.jpg',future:'o8_vize_future.jpg'}
+    },
+    final:{
+      past:'Sığınma ve yakınlık hissi taşıyan sundurmalı ev, yaz yağmuru altında romantik ve nostaljik bir sahne.',
+      present:'Ege deniziyle ilişkili dingin açık mekân, su altı imgeleri ve içsel huzur duygusu taşıyan atmosfer.',
+      future:'Beyazıt ya da Taksim benzeri kamusal meydan, toplumsal bilinç, cesaret ve umut duygusunu taşıyan açık mekânsal kurgu.',
+      images:{past:'o8_final_past.jpg',present:'o8_final_present.jpg',future:'o8_final_future.jpg'}
+    }
+  }
+];
+
+const EMBEDDED_RUBRICS = {
+  'Ö-01': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:5,prompt:5,temporal:4,ai:4,creativity:5}},
+  'Ö-02': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}},
+  'Ö-03': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:5,prompt:4,temporal:4,ai:4,creativity:5}},
+  'Ö-04': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}},
+  'Ö-05': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:3,creativity:4}},
+  'Ö-06': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}},
+  'Ö-07': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:5,prompt:4,temporal:4,ai:4,creativity:5}},
+  'Ö-08': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}}
+};
+function cloneEmbeddedStudents(){
+  return JSON.parse(JSON.stringify(EMBEDDED_STUDENTS));
+}
+function cloneEmbeddedRubrics(){
+  return JSON.parse(JSON.stringify(EMBEDDED_RUBRICS));
+}
+
 function stripImagesFromStudent(student){
   return {
     ...student,
@@ -383,27 +531,10 @@ async function idbDelete(key){
     tx.onerror = ()=>{ db.close(); reject(tx.error || new Error('Görsel silinemedi.')); };
   });
 }
-async function saveStudents(){
-  const safeStudents = students.map(stripImagesFromStudent);
-  localStorage.setItem(STORAGE_STUDENTS, JSON.stringify(safeStudents));
-  await Promise.all(students.map(s => idbSet(s.id, getStudentImages(s))));
-}
-async function loadStudents(){
-  try{
-    const meta = JSON.parse(localStorage.getItem(STORAGE_STUDENTS) || '[]');
-    const hydrated = [];
-    for(const student of meta){
-      const images = await idbGet(student.id).catch(()=>null);
-      hydrated.push(applyImagesToStudent(student, images));
-    }
-    students = hydrated;
-  }catch(e){
-    console.error(e);
-    students = [];
-  }
-}
-function saveRubrics(){ localStorage.setItem(STORAGE_RUBRICS, JSON.stringify(rubrics)); }
-function loadRubrics(){ try{ rubrics = JSON.parse(localStorage.getItem(STORAGE_RUBRICS) || '{}'); }catch(e){ rubrics = {}; } }
+async function saveStudents(){ return true; }
+async function loadStudents(){ students = cloneEmbeddedStudents(); }
+function saveRubrics(){ return true; }
+function loadRubrics(){ rubrics = cloneEmbeddedRubrics(); }
 
 function destroyCharts(){ Object.values(charts).forEach(c=>{ try{ c.destroy(); }catch(e){} }); charts = {}; }
 
@@ -440,6 +571,14 @@ function ensureRubric(id){
 function avgRubric(obj){
   const arr = [obj.conceptual,obj.prompt,obj.temporal,obj.ai,obj.creativity].map(Number).filter(v=>v>0);
   return arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2) : 0;
+}
+function getRubricMetric(studentId, phase, key){
+  ensureRubric(studentId);
+  return Number(rubrics?.[studentId]?.[phase]?.[key] || 0);
+}
+function mean(arr){
+  const nums = arr.map(Number).filter(v=>!Number.isNaN(v));
+  return nums.length ? +(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(2) : 0;
 }
 
 function fileToDataURL(file){
@@ -501,11 +640,11 @@ function toggleOtherFields(){
 
 const stopWords = new Set(['ve','ile','bir','bu','için','the','and','for','with','from','that','this','çok','gibi','daha','olarak']);
 const timeLex = {
-  past:['geçmiş','tarihsel','eski','nostaljik','antik','historical','past','traditional','vintage','aged'],
-  present:['günümüz','çağdaş','modern','güncel','kent','present','contemporary','urban','current','realistic'],
-  future:['gelecek','ütopik','spekülatif','dijital','otonom','future','utopian','speculative','futuristic','smart']
+  past:['geçmiş','tarihsel','eski','nostaljik','antik','viktorya','gotik','klasik','tarihsel','19','18','historical','past','traditional','vintage','aged'],
+  present:['günümüz','çağdaş','modern','güncel','kent','şehir','çağdaş','minimalist','present','contemporary','urban','current','realistic'],
+  future:['gelecek','ütopik','spekülatif','dijital','otonom','adaptif','holografik','akıllı','future','utopian','speculative','futuristic','smart']
 };
-const narrativeLex = ['atmosfer','ışık','gölge','malzeme','beton','cam','ahşap','hikaye','duygu','anlatı','mood','light','shadow','material','concrete','glass','wood','story','emotion'];
+const narrativeLex = ['atmosfer','ışık','gölge','malzeme','beton','cam','ahşap','hikaye','duygu','anlatı','mekan','mekânsal','iç','dış','şömine','cephe','yüzey','form','mood','light','shadow','material','concrete','glass','wood','story','emotion','space','interior','facade','surface','form'];
 function tokenize(text){
   return (text||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(x => x && x.length>2 && !stopWords.has(x));
 }
@@ -538,6 +677,23 @@ function topKeywords(text, n=5){
   tokenize(text).forEach(t=>freq[t]=(freq[t]||0)+1);
   return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n).map(x=>x[0]);
 }
+
+function aggregateTemporalKeywords(kind, n=6){
+  const pool = [];
+  students.forEach(s=>{
+    const setObj = s[kind];
+    if(!setObj) return;
+    pool.push(...tokenize(setObj.past), ...tokenize(setObj.present), ...tokenize(setObj.future));
+  });
+  const temporalSet = new Set([...timeLex.past, ...timeLex.present, ...timeLex.future]);
+  const freq = {};
+  pool.filter(t=>temporalSet.has(t)).forEach(t=>freq[t]=(freq[t]||0)+1);
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n);
+}
+function renderKeywordBadges(entries){
+  if(!entries || !entries.length) return '<span class="small">Belirgin zaman kavramı bulunamadı.</span>';
+  return entries.map(([k,v])=>`<span class="badge kw"><strong>${k}</strong> (${v})</span>`).join('');
+}
 function renderImage(src){
   return src ? `<img src="${src}" alt="">` : `<div class="small">Görsel yok</div>`;
 }
@@ -548,7 +704,7 @@ function renderDataTab(){
   <div class="grid g2">
     <div class="card">
       <h2>Öğrenci Verisi Girişi</h2>
-      <p class="sub">Öğrenci bilgileri, kullanılan yapay zekâ araçları, vize/final promptları ve görseller</p><div class="notice" style="margin-bottom:12px">Sistem güncellendi: uzun promptlar ve görseller artık tarayıcı kotasına takılmadan ayrı depolamada saklanır. Görseller yüklenirken otomatik optimize edilir.</div>
+      <p class="sub">Öğrenci bilgileri, kullanılan yapay zekâ araçları, vize/final promptları ve görseller</p><div class="notice" style="margin-bottom:12px">Bu tez sürümü statik örnek veri ile çalışır. Sayfa yenilendiğinde veriler varsayılan hâline döner; GitHub üzerinde kalıcı kayıt yapılmaz.</div>
 
       <label>Öğrenci Kodu</label>
       <input id="studentId" placeholder="Ö-01">
@@ -772,54 +928,17 @@ async function deleteStudent(id){
   renderAll();
 }
 async function clearAllData(){
-  if(!confirm('Tüm veriler silinsin mi?')) return;
-  const ids = students.map(s=>s.id);
-  students = []; rubrics = {}; editingId = null;
-  await Promise.all(ids.map(id=>idbDelete(id).catch(()=>null)));
-  await saveStudents();
-  saveRubrics();
+  if(!confirm('Örnek veriler varsayılan hâline döndürülsün mü?')) return;
+  students = cloneEmbeddedStudents();
+  rubrics = cloneEmbeddedRubrics();
+  editingId = null;
   renderAll();
 }
 async function loadSampleData(){
-  students = [
-    {
-      id:'Ö-01', artworkName:"Howl's Moving Castle", artworkType:'film',
-      tools:{text:['ChatGPT'], image:['Adobe Firefly']},
-      vize:{
-        past:'A walking castle in the mountains from the late 19th century with aged timber and layered handmade additions.',
-        present:'Imagine this castle in 2025 as a dense vertical urban dwelling with modular facades and realistic city context.',
-        future:'A speculative architectural environment shaped by artificial intelligence and advanced energy systems.',
-        images:{past:'',present:'',future:''}
-      },
-      final:{
-        past:'A historical walking castle interior-exterior hybrid with handcrafted timber shells, worn materials, nostalgic atmosphere and layered steampunk construction.',
-        present:'A contemporary vertical castle-like urban structure with realistic glass, metal and modular extensions, integrated into a dense metropolitan skyline.',
-        future:'A speculative energy-driven adaptive architectural organism with autonomous systems, luminous infrastructure and posthuman urban atmosphere.',
-        images:{past:'',present:'',future:''}
-      }
-    },
-    {
-      id:'Ö-02', artworkName:'1984', artworkType:'kitap',
-      tools:{text:['Claude','Diğer: NotebookLM'], image:['Midjourney']},
-      vize:{
-        past:'Old surveillance room with dark walls and authoritarian mood.',
-        present:'Modern control room with screens and cold atmosphere.',
-        future:'Future oppressive chamber with digital tracking.',
-        images:{past:'',present:'',future:''}
-      },
-      final:{
-        past:'Historical authoritarian room with worn surfaces, dim light and oppressive symbolism.',
-        present:'Contemporary surveillance interior with cold lighting, controlled circulation and realistic urban context.',
-        future:'Speculative dystopian chamber with biometric tracking, algorithmic control and oppressive digital atmosphere.',
-        images:{past:'',present:'',future:''}
-      }
-    }
-  ];
-  rubrics = {
-    'Ö-01': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:5,prompt:5,temporal:4,ai:4,creativity:5}},
-    'Ö-02': {vize:{conceptual:2,prompt:2,temporal:2,ai:2,creativity:2}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}}
-  };
-  await saveStudents(); saveRubrics(); renderAll();
+  students = cloneEmbeddedStudents();
+  rubrics = cloneEmbeddedRubrics();
+  editingId = null;
+  renderAll();
 }
 
 function renderArtworks(){
@@ -966,26 +1085,38 @@ function renderCompare(){
   if(!students.length){ el.innerHTML = '<div class="card empty">Veri girişi yapın.</div>'; return; }
   const rows = students.map(s=>{
     const v = analyzeSet(s.vize), f = analyzeSet(s.final);
-    return {id:s.id, artwork:s.artworkName, v, f, imgs:{v:s.vize.images, f:s.final.images}, txt:{v:s.vize,f:s.final}};
+    return {
+      id:s.id,
+      artwork:s.artworkName,
+      v, f,
+      rubric:{
+        vPrompt:getRubricMetric(s.id,'vize','prompt'),
+        fPrompt:getRubricMetric(s.id,'final','prompt'),
+        vTemporal:getRubricMetric(s.id,'vize','temporal'),
+        fTemporal:getRubricMetric(s.id,'final','temporal')
+      },
+      imgs:{v:s.vize.images, f:s.final.images},
+      txt:{v:s.vize,f:s.final}
+    };
   });
   el.innerHTML = `
     <div class="grid g4">
-      <div class="stat"><div class="v">${(rows.reduce((a,b)=>a+(b.f.avgWords-b.v.avgWords),0)/rows.length).toFixed(1)}</div><div class="k">Kelime Artışı</div></div>
-      <div class="stat"><div class="v">${(rows.reduce((a,b)=>a+(b.f.avgUnique-b.v.avgUnique),0)/rows.length).toFixed(1)}</div><div class="k">Tekil Kavram Artışı</div></div>
-      <div class="stat"><div class="v">${(rows.reduce((a,b)=>a+(b.f.avgQuality-b.v.avgQuality),0)/rows.length).toFixed(2)}</div><div class="k">Nitelik Artışı</div></div>
-      <div class="stat"><div class="v">${(rows.reduce((a,b)=>a+(b.f.temporalDifferentiation-b.v.temporalDifferentiation),0)/rows.length).toFixed(2)}</div><div class="k">Zamansal Ayrışma Artışı</div></div>
+      <div class="stat"><div class="v">${mean(rows.map(r=>r.f.avgWords-r.v.avgWords)).toFixed(1)}</div><div class="k">Kelime Artışı</div></div>
+      <div class="stat"><div class="v">${mean(rows.map(r=>r.f.avgUnique-r.v.avgUnique)).toFixed(1)}</div><div class="k">Tekil Kavram Artışı</div></div>
+      <div class="stat"><div class="v">${mean(rows.map(r=>r.rubric.fPrompt-r.rubric.vPrompt)).toFixed(2)}</div><div class="k">Rubrikte Prompt Niteliği Artışı</div></div>
+      <div class="stat"><div class="v">${mean(rows.map(r=>r.rubric.fTemporal-r.rubric.vTemporal)).toFixed(2)}</div><div class="k">Rubrikte Zamansal Ayrışma Artışı</div></div>
     </div>
 
     <div class="grid g22" style="margin-top:16px">
-      <div class="card"><h2>Prompt Niteliği Karşılaştırması</h2><div class="chartbox"><canvas id="compareQuality"></canvas></div></div>
-      <div class="card"><h2>Zamansal Ayrışma Karşılaştırması</h2><div class="chartbox"><canvas id="compareTemporal"></canvas></div></div>
+      <div class="card"><h2>Prompt Niteliği Karşılaştırması</h2><div class="chartbox"><canvas id="compareQuality"></canvas></div><p class="small" style="margin-top:10px">Bu grafik, otomatik kelime sayımı yerine araştırmacı tarafından girilen rubrik puanlarını göstermektedir.</p></div>
+      <div class="card"><h2>Zamansal Ayrışma Karşılaştırması</h2><div class="chartbox"><canvas id="compareTemporal"></canvas></div><p class="small" style="margin-top:10px">Geçmiş, günümüz ve gelecek kurgularının ayrışma düzeyi rubrik puanları üzerinden sunulmuştur.</p></div>
     </div>
 
     <div class="card" style="margin-top:16px">
       <h2>Vize – Final Karşılaştırma Tablosu</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>Kod</th><th>Vize Ortalama Kelime</th><th>Final Ortalama Kelime</th><th>Vize Ortalama Nitelik</th><th>Final Ortalama Nitelik</th><th>Vize Zamansal Ayrışma</th><th>Final Zamansal Ayrışma</th></tr></thead>
-        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.v.avgWords}</td><td>${r.f.avgWords}</td><td>${r.v.avgQuality}</td><td>${r.f.avgQuality}</td><td>${r.v.temporalDifferentiation}</td><td>${r.f.temporalDifferentiation}</td></tr>`).join('')}</tbody>
+        <thead><tr><th>Kod</th><th>Vize Ortalama Kelime</th><th>Final Ortalama Kelime</th><th>Vize Prompt Niteliği</th><th>Final Prompt Niteliği</th><th>Vize Zamansal Ayrışma</th><th>Final Zamansal Ayrışma</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.v.avgWords}</td><td>${r.f.avgWords}</td><td>${r.rubric.vPrompt}</td><td>${r.rubric.fPrompt}</td><td>${r.rubric.vTemporal}</td><td>${r.rubric.fTemporal}</td></tr>`).join('')}</tbody>
       </table></div>
     </div>
 
@@ -1014,13 +1145,13 @@ function renderCompare(){
   `;
   charts.compareQuality = new Chart(document.getElementById('compareQuality'), {
     type:'bar',
-    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.v.avgQuality)}, {label:'Final', data:rows.map(r=>r.f.avgQuality)}]},
-    options:{responsive:true, maintainAspectRatio:false}
+    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.rubric.vPrompt)}, {label:'Final', data:rows.map(r=>r.rubric.fPrompt)}]},
+    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
   });
   charts.compareTemporal = new Chart(document.getElementById('compareTemporal'), {
     type:'bar',
-    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.v.temporalDifferentiation)}, {label:'Final', data:rows.map(r=>r.f.temporalDifferentiation)}]},
-    options:{responsive:true, maintainAspectRatio:false}
+    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.rubric.vTemporal)}, {label:'Final', data:rows.map(r=>r.rubric.fTemporal)}]},
+    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
   });
 }
 
@@ -1129,15 +1260,32 @@ function renderFindings(){
   if(!students.length){ el.innerHTML = '<div class="card empty">Veri girişi yapın.</div>'; return; }
   const v = students.map(s=>analyzeSet(s.vize));
   const f = students.map(s=>analyzeSet(s.final));
-  const mean = arr => +(arr.reduce((a,b)=>a+b,0)/Math.max(arr.length,1)).toFixed(2);
-  const vQ = mean(v.map(x=>x.avgQuality)), fQ = mean(f.map(x=>x.avgQuality));
-  const vT = mean(v.map(x=>x.temporalDifferentiation)), fT = mean(f.map(x=>x.temporalDifferentiation));
+  const vPrompt = mean(students.map(s=>getRubricMetric(s.id,'vize','prompt')));
+  const fPrompt = mean(students.map(s=>getRubricMetric(s.id,'final','prompt')));
+  const vTemporal = mean(students.map(s=>getRubricMetric(s.id,'vize','temporal')));
+  const fTemporal = mean(students.map(s=>getRubricMetric(s.id,'final','temporal')));
+  const vTemporalKeywords = aggregateTemporalKeywords('vize');
+  const fTemporalKeywords = aggregateTemporalKeywords('final');
   const ranking = students.map(s=>({id:s.id, avg:avgRubric((rubrics[s.id]||{}).final)})).sort((a,b)=>b.avg-a.avg);
   el.innerHTML = `
-    <div class="notice">Aşağıdaki metinler veri temelli taslak yorumlardır. Tez metnine aktarılmadan önce araştırmacı tarafından yeniden yazılmalıdır.</div>
+    <div class="notice">Aşağıdaki metinler veri temelli taslak yorumlardır. Otomatik dil analizi yardımcı gösterge, rubrik puanları ise temel değerlendirme kaynağı olarak yorumlanmalıdır.</div>
+    <div class="grid g2" style="margin-bottom:16px">
+      <div class="card">
+        <h2>Vize Sürecinde Öne Çıkan Zaman Kavramları</h2>
+        <p class="sub">Vize promptlarında en sık tekrar eden zamansal anahtar sözcükler</p>
+        <div class="kws">${renderKeywordBadges(vTemporalKeywords)}</div>
+      </div>
+      <div class="card">
+        <h2>Final Sürecinde Öne Çıkan Zaman Kavramları</h2>
+        <p class="sub">Final promptlarında en sık tekrar eden zamansal anahtar sözcükler</p>
+        <div class="kws">${renderKeywordBadges(fTemporalKeywords)}</div>
+      </div>
+    </div>
     <div class="card">
-      <div class="finding"><strong>Prompt gelişimi:</strong> Öğrencilerin final aşamasında ürettikleri promptların ortalama niteliği ${vQ} düzeyinden ${fQ} düzeyine yükselmiştir. Bu bulgu, kavramsal çeşitlilik ve zamansal uygunluk bakımından gelişim olduğunu göstermektedir.</div>
-      <div class="finding"><strong>Zamansal ayrışma:</strong> Vize aşamasında ortalama zamansal ayrışma ${vT}, final aşamasında ise ${fT} olarak hesaplanmıştır. Bu durum, geçmiş, günümüz ve gelecek kurgularının finalde daha belirgin biçimde ayrıştığını düşündürmektedir.</div>
+      <div class="finding"><strong>Prompt gelişimi:</strong> Öğrencilerin final aşamasında ürettikleri istemlerin rubrikteki ortalama prompt niteliği puanı ${vPrompt} düzeyinden ${fPrompt} düzeyine yükselmiştir. Bu sonuç, final aşamasında daha bilinçli, yönlendirici ve kavramsal olarak net istemler kurulduğunu göstermektedir.</div>
+      <div class="finding"><strong>Zamansal ayrışma:</strong> Vize aşamasında ortalama zamansal ayrışma puanı ${vTemporal}, final aşamasında ise ${fTemporal} olarak hesaplanmıştır. Bu durum, geçmiş, günümüz ve gelecek kurgularının finalde daha belirgin biçimde ayrıştığını göstermektedir.</div>
+      <div class="finding"><strong>Zaman kavramları:</strong> Vize sürecinde en sık öne çıkan kavramlar ${vTemporalKeywords.length ? vTemporalKeywords.map(([k])=>`“${k}”`).join(', ') : 'belirgin biçimde saptanamamıştır'}. Final sürecinde ise ${fTemporalKeywords.length ? fTemporalKeywords.map(([k])=>`“${k}”`).join(', ') : 'belirgin biçimde saptanamamamıştır'}. Bu dağılım, öğrencilerin her iki aşamada da zaman katmanlarını metinsel olarak görünür kılmaya çalıştığını göstermektedir.</div>
+      <div class="finding"><strong>Destekleyici dil analizi:</strong> Otomatik analizde ortalama kelime sayısı ${mean(v.map(x=>x.avgWords))} düzeyinden ${mean(f.map(x=>x.avgWords))} düzeyine yükselmiştir. Bu bulgu, final istemlerde betimleyici yoğunluğun arttığını destekleyici biçimde göstermektedir.</div>
       <div class="finding"><strong>Rubrik sonucu:</strong> Final rubrik değerlendirmesine göre en yüksek ortalamaya sahip öğrenci <strong>${ranking[0]?.id || '-'}</strong> olmuştur. Bu sıralama yalnızca final ürün üzerinden oluşturulmuştur.</div>
       <div class="finding"><strong>Yöntemsel çerçeve:</strong> Sistem, yaratıcılığı mutlak olarak ölçen bir araç değil; kavramsal gelişim, istem niteliği, zamansal ayrışma ve görsel üretim ilişkisini görünür kılan çok boyutlu bir değerlendirme çerçevesidir.</div>
     </div>
