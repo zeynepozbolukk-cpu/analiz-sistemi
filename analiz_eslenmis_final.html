@@ -448,7 +448,7 @@ A dystopian futuristic castle inspired by Franz Kafka’s “The Castle”, imag
   },
   {
     id:'Ö-8', artworkName:'Buluşmak Üzere', artworkType:'Şiir',
-    tools:{text:['ChatGPT'], image:['Leonarda AI']},
+    tools:{text:['ChatGPT'], image:['Leonardo AI']},
     vize:{
       past:`Create a serene 1900s scene in the Aegean Sea, where the water is soft, clear, and white, symbolizing purity and peace. The underwater world is a dreamlike world, with fish and seaweed representing the continuity of life. It is early morning, and a person wants to dive into the water, symbolizing the desire for freedom and inner exploration. The scene reflects spiritual communion, with the presence of a loved one being felt rather than seen. The atmosphere is peaceful, mystical, and filled with inner serenity, reflecting the deep connection between nature and spirit in the 1800s." Water: Soft, clear, white, symbolizing purity. Underwater: Dreamy, with fish and seaweed, symbolizing continuity. Lighting: Soft morning light, peaceful atmosphere. Mood: Calm, contemplative, a spiritual connection to nature.`,
       present:`Create a serene and mystical underwater scene in the Aegean Sea at dawn in 2025. The calm, clear water glows with soft turquoise and pale blue, while the morning light casts golden reflections on the seabed. The focus should be on the surroundings: small fish swim in schools, seaweed flows gently, and smooth rocks and open corals rest naturally on the seabed. A woman in a modern white bikini can be seen, blending softly into the scene. The composition should emphasize the peaceful underwater landscape, the play of light, and the dreamlike atmosphere. Use a wide cinematic shot with no human figures in the middle. Prioritize mood, nature, and timeless serenity.`,
@@ -481,15 +481,15 @@ A dystopian futuristic castle inspired by Franz Kafka’s “The Castle”, imag
 ];
 
 const EMBEDDED_RUBRICS = {
-  'Ö-1': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-2': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-3': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-4': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-5': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-6': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-7': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-8': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
-  'Ö-9': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}}
+  'Ö-1': {vize:{conceptual:2,prompt:2,temporal:1,ai:2,creativity:2}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-2': {vize:{conceptual:3,prompt:2,temporal:2,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:2,ai:4,creativity:3}},
+  'Ö-3': {vize:{conceptual:3,prompt:3,temporal:2,ai:3,creativity:3}, final:{conceptual:4,prompt:4,temporal:4,ai:4,creativity:4}},
+  'Ö-4': {vize:{conceptual:3,prompt:3,temporal:1,ai:3,creativity:3}, final:{conceptual:5,prompt:4,temporal:4,ai:4,creativity:3}},
+  'Ö-5': {vize:{conceptual:2,prompt:2,temporal:1,ai:2,creativity:2}, final:{conceptual:4,prompt:4,temporal:4,ai:3,creativity:4}},
+  'Ö-6': {vize:{conceptual:2,prompt:3,temporal:1,ai:2,creativity:2}, final:{conceptual:3,prompt:3,temporal:2,ai:3,creativity:3}},
+  'Ö-7': {vize:{conceptual:4,prompt:3,temporal:2,ai:3,creativity:3}, final:{conceptual:5,prompt:4,temporal:4,ai:4,creativity:5}},
+  'Ö-8': {vize:{conceptual:2,prompt:2,temporal:1,ai:2,creativity:2}, final:{conceptual:3,prompt:3,temporal:2,ai:3,creativity:3}},
+  'Ö-9': {vize:{conceptual:2,prompt:3,temporal:1,ai:2,creativity:2}, final:{conceptual:3,prompt:3,temporal:2,ai:3,creativity:2}}
 };
 function cloneEmbeddedStudents(){
   return JSON.parse(JSON.stringify(EMBEDDED_STUDENTS));
