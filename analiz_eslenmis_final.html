@@ -215,7 +215,7 @@ th{background:#fbf7f1;font-size:11px;color:var(--muted);text-transform:uppercase
 .rubric-card{border:1px solid rgba(120,78,46,.12);border-radius:22px;padding:16px;background:#fff;margin-bottom:14px;box-shadow:var(--shadow)}
 .rubric-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .rubric-title{font-size:20px;font-weight:700;color:var(--accent-dark)}
-.rubric-form{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;margin-top:12px}
+.rubric-form{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;align-items:end;margin-top:12px}
 .small{font-size:12px;color:var(--muted);font-family:Arial,Helvetica,sans-serif}
 .finding{background:linear-gradient(180deg,#fff,#fbf7f1);border-left:4px solid var(--accent);padding:14px 16px;border-radius:16px;margin-bottom:12px;line-height:1.75}
 hr.sep{border:none;border-top:1px solid #eadfce;margin:16px 0}
@@ -443,7 +443,7 @@ A dystopian futuristic castle inspired by Franz Kafka’s “The Castle”, imag
   },
   {
     id:'Ö-8', artworkName:'Buluşmak Üzere', artworkType:'Şiir',
-    tools:{text:['ChatGPT'], image:['Leonarda AI']},
+    tools:{text:['ChatGPT'], image:['Leonardo AI']},
     vize:{
       past:`Create a serene 1900s scene in the Aegean Sea, where the water is soft, clear, and white, symbolizing purity and peace. The underwater world is a dreamlike world, with fish and seaweed representing the continuity of life. It is early morning, and a person wants to dive into the water, symbolizing the desire for freedom and inner exploration. The scene reflects spiritual communion, with the presence of a loved one being felt rather than seen. The atmosphere is peaceful, mystical, and filled with inner serenity, reflecting the deep connection between nature and spirit in the 1800s." Water: Soft, clear, white, symbolizing purity. Underwater: Dreamy, with fish and seaweed, symbolizing continuity. Lighting: Soft morning light, peaceful atmosphere. Mood: Calm, contemplative, a spiritual connection to nature.`,
       present:`Create a serene and mystical underwater scene in the Aegean Sea at dawn in 2025. The calm, clear water glows with soft turquoise and pale blue, while the morning light casts golden reflections on the seabed. The focus should be on the surroundings: small fish swim in schools, seaweed flows gently, and smooth rocks and open corals rest naturally on the seabed. A woman in a modern white bikini can be seen, blending softly into the scene. The composition should emphasize the peaceful underwater landscape, the play of light, and the dreamlike atmosphere. Use a wide cinematic shot with no human figures in the middle. Prioritize mood, nature, and timeless serenity.`,
@@ -580,28 +580,46 @@ function renderVisible(id){
   if(id==='tab-findings') renderFindings();
 }
 
+
+const RUBRIC_FIELDS = [
+  {key:'conceptual', label:'Kavramsal Anlatım'},
+  {key:'prompt', label:'Prompt Niteliği'},
+  {key:'temporal', label:'Zamansal Ayrışma'},
+  {key:'ai', label:'Yapay Zekâ ile Etkileşim'},
+  {key:'creativity', label:'Mekânsal Yaratıcılık'}
+];
+
+function normalizeRubricPhase(phaseObj){
+  const base = Object.assign({conceptual:'',prompt:'',temporal:'',ai:'',creativity:''}, phaseObj || {});
+  if(base.prompt === '' && base.conceptual !== '') base.prompt = base.conceptual;
+  if(base.temporal === '' && base.spatial !== undefined && base.spatial !== '') base.temporal = base.spatial;
+  if(base.ai === '' && base.technology !== undefined && base.technology !== '') base.ai = base.technology;
+  if(base.creativity === '' && base.atmosphere !== undefined && base.atmosphere !== '') base.creativity = base.atmosphere;
+  delete base.spatial;
+  delete base.atmosphere;
+  delete base.technology;
+  return base;
+}
+
 function ensureRubric(id){
   if(!rubrics[id]){
-    rubrics[id] = {
-      vize:{conceptual:'',spatial:'',atmosphere:'',technology:''},
-      final:{conceptual:'',spatial:'',atmosphere:'',technology:''}
-    };
+    rubrics[id] = { vize:normalizeRubricPhase({}), final:normalizeRubricPhase({}) };
   } else {
-    rubrics[id].vize = Object.assign({conceptual:'',spatial:'',atmosphere:'',technology:''}, rubrics[id].vize || {});
-    rubrics[id].final = Object.assign({conceptual:'',spatial:'',atmosphere:'',technology:''}, rubrics[id].final || {});
+    rubrics[id].vize = normalizeRubricPhase(rubrics[id].vize);
+    rubrics[id].final = normalizeRubricPhase(rubrics[id].final);
   }
 }
 
 function avgRubric(obj){
-  const arr = [obj.conceptual,obj.spatial,obj.atmosphere,obj.technology].map(Number).filter(v=>v>0);
+  const arr = RUBRIC_FIELDS.map(f=>obj[f.key]).map(Number).filter(v=>v>0);
   return arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2) : 0;
 }
 function getRubricMetric(studentId, phase, key){
   ensureRubric(studentId);
   const r = rubrics?.[studentId]?.[phase] || {};
-  const alias = {prompt:'conceptual', temporal:'spatial', ai:'technology', creativity:'atmosphere'};
-  return Number(r[key] || r[alias[key]] || 0);
+  return Number(r[key] || 0);
 }
+
 function mean(arr){
   const nums = arr.map(Number).filter(v=>!Number.isNaN(v));
   return nums.length ? +(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(2) : 0;
@@ -664,35 +682,166 @@ function toggleOtherFields(){
   if(i) i.style.display = imgOther ? 'block' : 'none';
 }
 
-const stopWords = new Set(['ve','ile','bir','bu','için','the','and','for','with','from','that','this','çok','gibi','daha','olarak']);
-const timeLex = {
-  past:['geçmiş','tarihsel','eski','nostaljik','antik','viktorya','gotik','klasik','tarihsel','19','18','historical','past','traditional','vintage','aged'],
-  present:['günümüz','çağdaş','modern','güncel','kent','şehir','çağdaş','minimalist','present','contemporary','urban','current','realistic'],
-  future:['gelecek','ütopik','spekülatif','dijital','otonom','adaptif','holografik','akıllı','future','utopian','speculative','futuristic','smart']
+
+const stopWords = new Set([
+  've','veya','ile','bir','bu','şu','için','gibi','çok','daha','olarak','da','de','mi','mı','mu','mü',
+  'the','and','for','with','from','that','this','into','onto','over','under','inside','outside','within',
+  'is','are','was','were','be','been','being','of','in','on','at','to','it','its','an','a','by','or',
+  'as','through','across','around','near','still','also','only','all','many','few','some','every','each',
+  'imagine','year','today','world','space','scene','image','style','highly','detailed','realistic','inspired',
+  'aesthetic','aesthetics','appears','appearing','appeared','designed','depicted','create','creating','creates',
+  'atmosphere','composition','structure','building','environment','interior','exterior','lighting','rendered'
+]);
+
+const genericConceptWords = new Set([
+  'ancak','gibi','dünya','yıl','görsel','sahne','mekan','mekân','space','scene','image','style','world','year',
+  'highly','detailed','realistic','inspired','designed','depicted','environment','atmosphere','composition',
+  'structure','building','interior','exterior','lighting','rendered','present','future','past','geçmiş','günümüz','gelecek'
+]);
+
+const phraseMap = {
+  'walking castle':'yürüyen kale',
+  'mechanical legs':'mekanik ayaklar',
+  'scrap materials':'hurda malzeme',
+  'small houses':'küçük evler',
+  'rotating gears':'dönen dişliler',
+  'green valley':'yeşil vadi',
+  'stone wood iron':'taş ahşap demir',
+  'stone walls':'taş duvarlar',
+  'gothic arches':'gotik kemerler',
+  'stained glass':'vitray',
+  'colored balloons':'renkli balonlar',
+  'colourful balloons':'renkli balonlar',
+  'colorful balloons':'renkli balonlar',
+  'flying house':'uçan ev',
+  'solar panels':'güneş panelleri',
+  'smart glass':'akıllı cam',
+  'floating transportation capsules':'havada taşınan kapsüller',
+  'drone landing pads':'drone iniş alanları',
+  'holographic dome':'holografik kubbe',
+  'energy lines':'enerji hatları',
+  'van gogh':'van gogh',
+  'roman architecture':'roma mimarisi',
+  'stone paved streets':'taş döşeli sokaklar',
+  'spiral staircases':'spiral merdivenler',
+  'hexagonal walls':'altıgen duvarlar',
+  'victorian furniture':'viktorya mobilyaları',
+  'ancient ruins':'antik kalıntılar',
+  'golden light':'altın ışık',
+  'alien tech':'uzaylı teknolojisi',
+  'central console':'merkezi konsol',
+  'floating debris':'havada süzülen parçalar',
+  'cracked floor':'çatlak zemin',
+  'glowing symbols':'ışıklı semboller',
+  'psychological confinement':'psikolojik sıkışmışlık',
+  'time machine':'zaman makinesi',
+  'post impressionist':'post empresyonist',
+  'oil on canvas':'yağlı boya etkisi',
+  'suburban setting':'banliyö çevresi',
+  'science fiction city':'bilimkurgu kenti',
+  'matte composite panels':'mat kompozit paneller',
+  'anti gravity':'anti yerçekimi',
+  'autonomous vehicle lanes':'otonom araç yolları'
 };
-const narrativeLex = ['atmosfer','ışık','gölge','malzeme','beton','cam','ahşap','hikaye','duygu','anlatı','mekan','mekânsal','iç','dış','şömine','cephe','yüzey','form','mood','light','shadow','material','concrete','glass','wood','story','emotion','space','interior','facade','surface','form'];
+
+const conceptWordMap = {
+  'walking':'yürüyen','castle':'kale','mechanical':'mekanik','legs':'ayaklar','scrap':'hurda','materials':'malzeme',
+  'steam':'buhar','chimneys':'bacalar','chimney':'baca','gears':'dişliler','valley':'vadi','mountains':'dağlar',
+  'mountain':'dağ','rusty':'paslı','iron':'demir','wood':'ahşap','stone':'taş','windows':'pencereler','balconies':'balkonlar',
+  'doors':'kapılar','cloudy':'bulutlu','dramatic':'dramatik','magical':'büyülü','mysterious':'gizemli',
+  'house':'ev','balloons':'balonlar','balloon':'balon','rome':'roma','roman':'roma','columns':'sütunlar',
+  'travertine':'traverten','roof':'çatı','marble':'mermer','statues':'heykeller','vines':'sarmaşıklar',
+  'suburban':'banliyö','steel':'çelik','glass':'cam','futuristic':'fütüristik','city':'kent','smart':'akıllı',
+  'panels':'paneller','energy':'enerji','drone':'drone','holographic':'holografik','capsules':'kapsüller',
+  'floating':'süzülen','yellow':'sarı','building':'yapı','street':'sokak','cafe':'kafe','studio':'stüdyo',
+  'brushstrokes':'fırça darbeleri','adaptive':'adaptif','facades':'cepheler','transparent':'şeffaf','materials':'malzemeler',
+  'spiral':'spiral','staircases':'merdivenler','hexagonal':'altıgen','victorian':'viktorya','technology':'teknoloji',
+  'ruins':'kalıntılar','console':'konsol','symbols':'semboller','labyrinth':'labirent','shadows':'gölgeler',
+  'mist':'sis','nightmare':'kâbus','doctor':'doktor','tardis':'tardis','books':'kitaplar','fireplace':'şömine',
+  'oak':'meşe','table':'masa','beams':'kirişler','hall':'salon','library':'kütüphane','warm':'sıcak','dark':'karanlık'
+};
+
+const timeLex = {
+  past:['geçmiş','tarihsel','eski','nostaljik','antik','viktorya','gotik','klasik','historical','past','traditional','vintage','aged','ancient','roman','gothic','victorian','classical'],
+  present:['günümüz','çağdaş','modern','güncel','kent','şehir','minimalist','present','contemporary','urban','current','realistic','today','2025'],
+  future:['gelecek','ütopik','spekülatif','dijital','otonom','adaptif','holografik','akıllı','future','utopian','speculative','futuristic','smart','2325','2300','3000']
+};
+
 function tokenize(text){
-  return (text||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(x => x && x.length>2 && !stopWords.has(x));
+  return (text||'')
+    .toLowerCase()
+    .replace(/[’']/g,'')
+    .replace(/[^\p{L}\p{N}\s-]/gu,' ')
+    .split(/\s+/)
+    .filter(x => x && x.length>2 && !stopWords.has(x));
 }
+
+function translateConcept(raw){
+  if(!raw) return '';
+  const clean = raw.toLowerCase().trim();
+  if(phraseMap[clean]) return phraseMap[clean];
+  return clean.split(/\s+/).map(part => conceptWordMap[part] || part).join(' ');
+}
+
+function extractConcepts(text, maxCount=6){
+  const normalized = (text||'')
+    .toLowerCase()
+    .replace(/[’']/g,'')
+    .replace(/[^\p{L}\p{N}\s-]/gu,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  const results = [];
+  const seen = new Set();
+  const add = (value) => {
+    const item = translateConcept(value).replace(/\s+/g,' ').trim();
+    if(!item || seen.has(item) || genericConceptWords.has(item)) return;
+    seen.add(item);
+    results.push(item);
+  };
+
+  Object.keys(phraseMap).sort((a,b)=>b.length-a.length).forEach(phrase=>{
+    if(results.length < maxCount && normalized.includes(phrase)) add(phrase);
+  });
+
+  const tokens = tokenize(normalized).filter(t=>!genericConceptWords.has(t));
+  for(let i=0; i<tokens.length && results.length < maxCount; i++){
+    const current = tokens[i];
+    const next = tokens[i+1];
+    const candidateBigram = next ? `${current} ${next}` : '';
+    if(candidateBigram && phraseMap[candidateBigram]){
+      add(candidateBigram);
+      i += 1;
+      continue;
+    }
+    add(current);
+  }
+
+  return results.slice(0, maxCount);
+}
+
 function promptMetrics(text, phaseKey){
   const tokens = tokenize(text);
   const unique = [...new Set(tokens)];
   const temporalHits = unique.filter(x=>timeLex[phaseKey].includes(x)).length;
-  const narrativeHits = unique.filter(x=>narrativeLex.includes(x)).length;
-  const conceptualVariety = Math.min(5, +(unique.length/4).toFixed(2));
-  const temporalSuitability = Math.min(5, +(temporalHits*1.5 + (temporalHits?0.5:0)).toFixed(2));
-  const narrativeVariety = Math.min(5, +(narrativeHits*1.2 + Math.min(tokens.length/14,1.5)).toFixed(2));
-  const quality = +((conceptualVariety*0.4 + temporalSuitability*0.35 + narrativeVariety*0.25)).toFixed(2);
-  return {tokens, uniqueCount:unique.length, wordCount:tokens.length, conceptualVariety, temporalSuitability, narrativeVariety, quality};
+  const conceptualHits = extractConcepts(text, 10).length;
+  const narrativeHits = unique.filter(x=>['ışık','gölge','malzeme','cam','ahşap','taş','metal','atmosfer','renk','form','space','light','shadow','material','glass','wood','stone','metal','color','form'].includes(x)).length;
+  const promptQuality = Math.min(5, +(conceptualHits*0.55 + Math.min(unique.length/18,1.8) + Math.min(tokens.length/45,1.2)).toFixed(2));
+  const temporalSuitability = Math.min(5, +(temporalHits*1.35 + (temporalHits?0.6:0)).toFixed(2));
+  const conceptualVariety = Math.min(5, +(unique.length/6).toFixed(2));
+  const narrativeVariety = Math.min(5, +(narrativeHits*0.9 + Math.min(tokens.length/30,1.5)).toFixed(2));
+  const quality = +((promptQuality*0.45 + temporalSuitability*0.3 + narrativeVariety*0.25)).toFixed(2);
+  return {tokens, uniqueCount:unique.length, wordCount:tokens.length, conceptualVariety, temporalSuitability, narrativeVariety, promptQuality, concepts:extractConcepts(text, 6), quality};
 }
 function analyzeSet(setObj){
   const past = promptMetrics(setObj.past,'past');
   const present = promptMetrics(setObj.present,'present');
   const future = promptMetrics(setObj.future,'future');
-  const temporalDifferentiation = +(((Math.abs(past.quality-present.quality)+Math.abs(past.quality-future.quality)+Math.abs(present.quality-future.quality))/3)).toFixed(2);
+  const temporalDifferentiation = +(((Math.abs(past.temporalSuitability-present.temporalSuitability)+Math.abs(past.temporalSuitability-future.temporalSuitability)+Math.abs(present.temporalSuitability-future.temporalSuitability))/3)).toFixed(2);
   return {
     past,present,future,
     avgQuality:+((past.quality+present.quality+future.quality)/3).toFixed(2),
+    avgPromptQuality:+((past.promptQuality+present.promptQuality+future.promptQuality)/3).toFixed(2),
     avgWords:+((past.wordCount+present.wordCount+future.wordCount)/3).toFixed(1),
     avgUnique:+((past.uniqueCount+present.uniqueCount+future.uniqueCount)/3).toFixed(1),
     temporalDifferentiation
@@ -701,7 +850,7 @@ function analyzeSet(setObj){
 function keywordFreq(texts, n=8){
   const freq = {};
   (texts||[]).forEach(txt=>{
-    tokenize(txt).forEach(t=>{ freq[t] = (freq[t]||0)+1; });
+    extractConcepts(txt, 8).forEach(t=>{ freq[t] = (freq[t]||0)+1; });
   });
   return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n);
 }
@@ -719,7 +868,7 @@ function aggregateTemporalKeywords(kind, n=6){
   return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n);
 }
 function renderKeywordBadges(entries){
-  if(!entries || !entries.length) return '<span class="small">Belirgin zaman kavramı bulunamadı.</span>';
+  if(!entries || !entries.length) return '<span class="small">Belirgin kavram bulunamadı.</span>';
   return entries.map(([k,v])=>`<span class="badge kw"><strong>${k}</strong> (${v})</span>`).join('');
 }
 
@@ -1104,66 +1253,98 @@ function renderPromptSection(kind){
   charts[kind+'FutureChart']=makeBar(`${kind}FutureChart`, futureTop);
 }
 
+
 function renderCompare(){
   const el = document.getElementById('tab-compare');
   if(!students.length){ el.innerHTML = '<div class="card empty">Veri girişi yapın.</div>'; return; }
 
-  const rows = students.map(s=>({
-    id:s.id,
-    artwork:s.artworkName,
-    vAvg:avgRubric((rubrics[s.id]||{}).vize || {}),
-    fAvg:avgRubric((rubrics[s.id]||{}).final || {}),
-    imgs:{v:getPhaseImages(s,'vize'), f:getPhaseImages(s,'final')}
-  }));
+  const rows = students.map(s=>{
+    ensureRubric(s.id);
+    const vAnalyze = analyzeSet(s.vize);
+    const fAnalyze = analyzeSet(s.final);
+    return {
+      id:s.id,
+      artwork:s.artworkName,
+      vWords:vAnalyze.avgWords,
+      fWords:fAnalyze.avgWords,
+      vUnique:vAnalyze.avgUnique,
+      fUnique:fAnalyze.avgUnique,
+      vPrompt:getRubricMetric(s.id,'vize','prompt'),
+      fPrompt:getRubricMetric(s.id,'final','prompt'),
+      vTemporal:getRubricMetric(s.id,'vize','temporal'),
+      fTemporal:getRubricMetric(s.id,'final','temporal'),
+      vConceptual:getRubricMetric(s.id,'vize','conceptual'),
+      fConceptual:getRubricMetric(s.id,'final','conceptual'),
+      vAI:getRubricMetric(s.id,'vize','ai'),
+      fAI:getRubricMetric(s.id,'final','ai'),
+      vCreativity:getRubricMetric(s.id,'vize','creativity'),
+      fCreativity:getRubricMetric(s.id,'final','creativity'),
+      vAvg:avgRubric((rubrics[s.id]||{}).vize || {}),
+      fAvg:avgRubric((rubrics[s.id]||{}).final || {})
+    };
+  });
 
   el.innerHTML = `
     <div class="grid g4">
-      <div class="stat"><div class="v">${mean(rows.map(r=>r.vAvg)).toFixed(2)}</div><div class="k">Vize Ortalama</div></div>
-      <div class="stat"><div class="v">${mean(rows.map(r=>r.fAvg)).toFixed(2)}</div><div class="k">Final Ortalama</div></div>
-      <div class="stat"><div class="v">${mean(rows.map(r=>r.fAvg-r.vAvg)).toFixed(2)}</div><div class="k">Ortalama Artış</div></div>
-      <div class="stat"><div class="v">${rows.sort((a,b)=>b.fAvg-a.fAvg)[0]?.id || '-'}</div><div class="k">En Yüksek Final</div></div>
+      <div class="stat"><div class="v">${(mean(rows.map(r=>r.fWords-r.vWords))).toFixed(1)}</div><div class="k">Kelime Artışı</div></div>
+      <div class="stat"><div class="v">${(mean(rows.map(r=>r.fUnique-r.vUnique))).toFixed(1)}</div><div class="k">Tekil Kavram Artışı</div></div>
+      <div class="stat"><div class="v">${(mean(rows.map(r=>r.fPrompt-r.vPrompt))).toFixed(2)}</div><div class="k">Rubrikte Prompt Niteliği Artışı</div></div>
+      <div class="stat"><div class="v">${(mean(rows.map(r=>r.fTemporal-r.vTemporal))).toFixed(2)}</div><div class="k">Rubrikte Zamansal Ayrışma Artışı</div></div>
     </div>
 
     <div class="grid g22" style="margin-top:16px">
-      <div class="card"><h2>Vize – Final Ortalama Karşılaştırması</h2><div class="chartbox"><canvas id="compareAvgChart"></canvas></div></div>
-      <div class="card"><h2>Öğrenci Bazlı Rubrik Ortalamaları</h2><div class="chartbox"><canvas id="compareStudentChart"></canvas></div></div>
+      <div class="card"><h2>Prompt Niteliği Karşılaştırması</h2><div class="chartbox"><canvas id="comparePromptChart"></canvas></div><p class="sub" style="margin-top:12px">Grafik, araştırmacı tarafından girilen rubrik puanlarına göre vize ve final prompt niteliği düzeylerini gösterir.</p></div>
+      <div class="card"><h2>Zamansal Ayrışma Karşılaştırması</h2><div class="chartbox"><canvas id="compareTemporalChart"></canvas></div><p class="sub" style="margin-top:12px">Geçmiş, günümüz ve gelecek kurgularının ayrışma düzeyi rubrik puanları üzerinden sunulmuştur.</p></div>
     </div>
 
     <div class="card" style="margin-top:16px">
-      <h2>Karşılaştırma Tablosu</h2>
+      <h2>Vize – Final Karşılaştırma Tablosu</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>Kod</th><th>Eser</th><th>Vize Ortalama</th><th>Final Ortalama</th><th>Fark</th></tr></thead>
-        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.artwork}</td><td>${r.vAvg}</td><td>${r.fAvg}</td><td>${(r.fAvg-r.vAvg)>0?'+':''}${(r.fAvg-r.vAvg).toFixed(2)}</td></tr>`).join('')}</tbody>
+        <thead><tr><th>Kod</th><th>Vize Ortalama Kelime</th><th>Final Ortalama Kelime</th><th>Vize Prompt Niteliği</th><th>Final Prompt Niteliği</th><th>Vize Zamansal Ayrışma</th><th>Final Zamansal Ayrışma</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.vWords}</td><td>${r.fWords}</td><td>${r.vPrompt}</td><td>${r.fPrompt}</td><td>${r.vTemporal}</td><td>${r.fTemporal}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Rubrik Ölçütleri Detay Tablosu</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kod</th><th>Vize Kavramsal Anlatım</th><th>Final Kavramsal Anlatım</th><th>Vize YZ ile Etkileşim</th><th>Final YZ ile Etkileşim</th><th>Vize Mekânsal Yaratıcılık</th><th>Final Mekânsal Yaratıcılık</th><th>Vize Ortalama</th><th>Final Ortalama</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.vConceptual}</td><td>${r.fConceptual}</td><td>${r.vAI}</td><td>${r.fAI}</td><td>${r.vCreativity}</td><td>${r.fCreativity}</td><td>${r.vAvg}</td><td>${r.fAvg}</td></tr>`).join('')}</tbody>
       </table></div>
     </div>
   `;
 
-  charts.compareAvgChart = new Chart(document.getElementById('compareAvgChart'), {
+  charts.comparePromptChart = new Chart(document.getElementById('comparePromptChart'), {
     type:'bar',
-    data:{labels:['Vize Ortalama','Final Ortalama'], datasets:[{data:[mean(rows.map(r=>r.vAvg)), mean(rows.map(r=>r.fAvg))], label:'Ortalama'}]},
+    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.vPrompt)},{label:'Final', data:rows.map(r=>r.fPrompt)}]},
     options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
   });
-  charts.compareStudentChart = new Chart(document.getElementById('compareStudentChart'), {
+  charts.compareTemporalChart = new Chart(document.getElementById('compareTemporalChart'), {
     type:'bar',
-    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize Ortalama', data:rows.map(r=>r.vAvg)},{label:'Final Ortalama', data:rows.map(r=>r.fAvg)}]},
+    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.vTemporal)},{label:'Final', data:rows.map(r=>r.fTemporal)}]},
     options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
   });
 }
 
+
 function rubricInputs(studentId, phase){
   ensureRubric(studentId);
   const r = rubrics[studentId][phase];
+  const total = RUBRIC_FIELDS.map(f=>Number(r[f.key])||0).filter(v=>v>0).reduce((a,b)=>a+b,0);
   return `
     <div class="rubric-form">
-      <div><label>Kavramsal Tema</label><input type="number" min="1" max="5" value="${r.conceptual}" onchange="updateRubric('${studentId}','${phase}','conceptual',this.value)"></div>
-      <div><label>Mekânsal Kurgu</label><input type="number" min="1" max="5" value="${r.spatial}" onchange="updateRubric('${studentId}','${phase}','spatial',this.value)"></div>
-      <div><label>Atmosfer</label><input type="number" min="1" max="5" value="${r.atmosphere}" onchange="updateRubric('${studentId}','${phase}','atmosphere',this.value)"></div>
-      <div><label>Teknolojik Düzey</label><input type="number" min="1" max="5" value="${r.technology}" onchange="updateRubric('${studentId}','${phase}','technology',this.value)"></div>
-      <div><label>Toplam Puan</label><input type="text" value="${[r.conceptual,r.spatial,r.atmosphere,r.technology].map(Number).filter(v=>v>0).reduce((a,b)=>a+b,0)}" disabled></div>
+      ${RUBRIC_FIELDS.map(f=>`
+        <div>
+          <label>${f.label}</label>
+          <input type="number" min="1" max="5" value="${r[f.key] ?? ''}" onchange="updateRubric('${studentId}','${phase}','${f.key}',this.value)">
+        </div>
+      `).join('')}
+      <div><label>Toplam Puan</label><input type="text" value="${total}" disabled></div>
       <div><label>Ortalama Puan</label><input type="text" value="${avgRubric(r)}" disabled></div>
     </div>
   `;
 }
+
 function updateRubric(id, phase, key, value){
   ensureRubric(id);
   rubrics[id][phase][key] = value === '' ? '' : Number(value);
@@ -1171,75 +1352,28 @@ function updateRubric(id, phase, key, value){
   renderVisible('tab-rubric');
   renderVisible('tab-findings');
 }
-function keywordSummaryFromPrompt(text){
-  const t = (text || '').toLowerCase();
-  const pick = (rules, fallback='—') => {
-    for(const [label, pats] of rules){
-      if(pats.some(p => t.includes(p))) return label;
-    }
-    return fallback;
-  };
-  return {
-    conceptual: pick([
-      ['Steampunk', ['steampunk']],
-      ['Historical', ['19th', 'ancient', 'roman', 'gothic', 'edo', 'victorian']],
-      ['Contemporary', ['modern', '2025', 'contemporary', 'suburban', 'urban']],
-      ['Futuristic', ['future', 'futuristic', '2325', '3000', 'utopian', 'science-fiction']],
-      ['Fantasy', ['magical', 'enchanted', 'fantasy']],
-      ['Psychological', ['memory', 'loneliness', 'trauma', 'oppressive', 'psychological']]
-    ]),
-    spatial: pick([
-      ['Walking castle', ['walking castle', 'walking structure', 'walking house']],
-      ['House', [' house', 'home', 'villa']],
-      ['Castle hall', ['hall', 'reception hall']],
-      ['Castle', ['castle']],
-      ['Palace', ['palace']],
-      ['Bathhouse', ['bathhouse', 'banyo evi']],
-      ['Laboratory', ['laboratory', 'lab']],
-      ['Urban setting', ['city', 'urban', 'street', 'suburban', 'skyline']]
-    ]),
-    atmosphere: pick([
-      ['Dramatic', ['dramatic', 'cinematic']],
-      ['Mysterious', ['mysterious', 'mystical']],
-      ['Balanced', ['balanced', 'controlled', 'calm']],
-      ['Warm', ['warm', 'cozy', 'golden']],
-      ['Dim', ['dim', 'dark', 'shadow', 'low light']],
-      ['Dense', ['dense', 'oppressive', 'claustrophobic']],
-      ['Magical', ['magical', 'enchanted']],
-      ['Nostalgic', ['nostalgic', 'memory', 'melancholic']]
-    ]),
-    technology: pick([
-      ['Low', ['stone', 'wood', 'ancient', 'historical', 'roman', 'gothic']],
-      ['Mechanical', ['gear', 'steam', 'mechanical', 'metal legs']],
-      ['Mid-tech', ['glass', 'aluminum', 'solar', 'digital']],
-      ['High-tech', ['smart', 'adaptive', 'drone', 'holographic', 'anti-gravity', 'self-healing']],
-      ['Speculative', ['utopian', 'floating', 'energy lines', 'neon']]
-    ])
-  };
-}
+
 function rubricPreviewBlock(setObj){
   const imgs = setObj.images || {past:'',present:'',future:''};
-  const summaries = {
-    past: keywordSummaryFromPrompt(setObj.past),
-    present: keywordSummaryFromPrompt(setObj.present),
-    future: keywordSummaryFromPrompt(setObj.future)
-  };
   return `
     <div class="preview-grid">
-      ${['past','present','future'].map(period=>`
+      ${['past','present','future'].map(period=>{
+        const promptText = setObj[period] || '';
+        const concepts = extractConcepts(promptText, 6);
+        return `
       <div class="preview">
         <h4>${period==='past'?'Geçmiş':period==='present'?'Günümüz':'Gelecek'}</h4>
         <div class="img-frame">${renderImage(imgs[period])}</div>
         <div class="kws">
-          <span class="badge kw"><strong>Kavramsal Tema:</strong> ${summaries[period].conceptual}</span>
-          <span class="badge kw"><strong>Mekânsal Kurgu:</strong> ${summaries[period].spatial}</span>
-          <span class="badge kw"><strong>Atmosfer:</strong> ${summaries[period].atmosphere}</span>
-          <span class="badge kw"><strong>Teknolojik Düzey:</strong> ${summaries[period].technology}</span>
+          ${concepts.length ? concepts.map(item=>`<span class="badge kw">${item}</span>`).join('') : '<span class="small">Ana kavram bulunamadı.</span>'}
         </div>
-      </div>`).join('')}
+      </div>`;
+      }).join('')}
     </div>
   `;
 }
+
+
 function renderRubric(){
   const el = document.getElementById('tab-rubric');
   if(!students.length){ el.innerHTML = '<div class="card empty">Veri girişi yapın.</div>'; return; }
@@ -1247,11 +1381,15 @@ function renderRubric(){
   const studentVizeMeans = students.map(s=>avgRubric((rubrics[s.id]||{}).vize || {}));
   const studentFinalMeans = students.map(s=>avgRubric((rubrics[s.id]||{}).final || {}));
   const ranking = students.map((s,i)=>({
-    id:s.id, artwork:s.artworkName, vizeAvg:studentVizeMeans[i], finalAvg:studentFinalMeans[i], diff:+(studentFinalMeans[i]-studentVizeMeans[i]).toFixed(2)
+    id:s.id,
+    artwork:s.artworkName,
+    vizeAvg:studentVizeMeans[i],
+    finalAvg:studentFinalMeans[i],
+    diff:+(studentFinalMeans[i]-studentVizeMeans[i]).toFixed(2)
   })).sort((a,b)=>b.finalAvg-a.finalAvg);
 
   el.innerHTML = `
-    <div class="notice">Rubrik puanları araştırmacı tarafından manuel olarak girilir. Aşağıdaki kavramlar, istemlerden türetilmiş olup değerlendirmeyi desteklemek amacıyla sunulmaktadır. Nihai puan, istem ve görselin birlikte değerlendirilmesine dayanır.</div>
+    <div class="notice">Rubrik puanları araştırmacı tarafından manuel olarak girilir. Ana kavramlar, istemlerin metinsel içeriğinden otomatik olarak çıkarılır ve değerlendirmeyi desteklemek için gösterilir. Nihai puanlama; kavramsal anlatım, prompt niteliği, zamansal ayrışma, yapay zekâ ile etkileşim ve mekânsal yaratıcılık ölçütleri üzerinden yapılır.</div>
 
     <div class="card" style="margin-top:16px">
       <h2>Öğrenci Rubrik Ortalamaları</h2>
@@ -1266,7 +1404,7 @@ function renderRubric(){
       </table></div>
     </div>
 
-    <div class="card" style="margin-top:16px"><h2>Vize Rubrik Değerlendirmesi</h2>
+    <div class="card" style="margin-top:16px"><h2>Vize Analitik Rubrik Değerlendirmesi</h2>
       ${students.map(s=>`
         <div class="rubric-card">
           <div class="rubric-head"><div><div class="rubric-title">${s.id}</div><div class="small">${s.artworkName}</div></div></div>
@@ -1275,7 +1413,7 @@ function renderRubric(){
         </div>`).join('')}
     </div>
 
-    <div class="card" style="margin-top:16px"><h2>Final Rubrik Değerlendirmesi</h2>
+    <div class="card" style="margin-top:16px"><h2>Final Analitik Rubrik Değerlendirmesi</h2>
       ${students.map(s=>`
         <div class="rubric-card">
           <div class="rubric-head"><div><div class="rubric-title">${s.id}</div><div class="small">${s.artworkName}</div></div></div>
@@ -1295,44 +1433,59 @@ function renderRubric(){
   }
 }
 
+
 function renderFindings(){
   const el = document.getElementById('tab-findings');
   if(!students.length){ el.innerHTML = '<div class="card empty">Veri girişi yapın.</div>'; return; }
 
-  const vTemporalKeywords = aggregateTemporalKeywords('vize');
-  const fTemporalKeywords = aggregateTemporalKeywords('final');
-  const labels = students.map(s=>s.id);
-  const studentVizeMeans = students.map(s=>avgRubric((rubrics[s.id]||{}).vize || {}));
-  const studentFinalMeans = students.map(s=>avgRubric((rubrics[s.id]||{}).final || {}));
-  const ranking = students.map(s=>({id:s.id, avg:avgRubric((rubrics[s.id]||{}).final || {})})).sort((a,b)=>b.avg-a.avg);
+  const rows = students.map(s=>{
+    const vAnalyze = analyzeSet(s.vize);
+    const fAnalyze = analyzeSet(s.final);
+    return {
+      id:s.id,
+      vWords:vAnalyze.avgWords,
+      fWords:fAnalyze.avgWords,
+      vConcepts:keywordFreq([s.vize.past,s.vize.present,s.vize.future],6).map(([k])=>k).join(', '),
+      fConcepts:keywordFreq([s.final.past,s.final.present,s.final.future],6).map(([k])=>k).join(', '),
+      vAvg:avgRubric((rubrics[s.id]||{}).vize || {}),
+      fAvg:avgRubric((rubrics[s.id]||{}).final || {}),
+      vPrompt:getRubricMetric(s.id,'vize','prompt'),
+      fPrompt:getRubricMetric(s.id,'final','prompt'),
+      vTemporal:getRubricMetric(s.id,'vize','temporal'),
+      fTemporal:getRubricMetric(s.id,'final','temporal')
+    };
+  });
+
+  const ranking = [...rows].sort((a,b)=>b.fAvg-a.fAvg);
+  const avgWordIncrease = mean(rows.map(r=>r.fWords-r.vWords)).toFixed(1);
+  const avgPromptIncrease = mean(rows.map(r=>r.fPrompt-r.vPrompt)).toFixed(2);
+  const avgTemporalIncrease = mean(rows.map(r=>r.fTemporal-r.vTemporal)).toFixed(2);
 
   el.innerHTML = `
-    <div class="notice">Aşağıdaki bulgular, rubrik puanları ve destekleyici dil verileri birlikte değerlendirilerek oluşturulmuştur.</div>
-    <div class="grid g2" style="margin-bottom:16px">
-      <div class="card">
-        <h2>Vize Sürecinde Öne Çıkan Zaman Kavramları</h2>
-        <p class="sub">Vize promptlarında en sık tekrar eden zamansal anahtar sözcükler</p>
-        <div class="kws">${renderKeywordBadges(vTemporalKeywords)}</div>
-      </div>
-      <div class="card">
-        <h2>Final Sürecinde Öne Çıkan Zaman Kavramları</h2>
-        <p class="sub">Final promptlarında en sık tekrar eden zamansal anahtar sözcükler</p>
-        <div class="kws">${renderKeywordBadges(fTemporalKeywords)}</div>
-      </div>
+    <div class="notice">Aşağıdaki bulgular; otomatik ana kavram çıkarımı, prompt uzunluğu verileri ve araştırmacı tarafından girilen rubrik puanları birlikte değerlendirilerek üretilmiştir.</div>
+
+    <div class="grid g4" style="margin-top:16px">
+      <div class="stat"><div class="v">${avgWordIncrease}</div><div class="k">Ortalama Kelime Artışı</div></div>
+      <div class="stat"><div class="v">${avgPromptIncrease}</div><div class="k">Prompt Niteliği Artışı</div></div>
+      <div class="stat"><div class="v">${avgTemporalIncrease}</div><div class="k">Zamansal Ayrışma Artışı</div></div>
+      <div class="stat"><div class="v">${ranking[0]?.id || '-'}</div><div class="k">En Yüksek Final Ortalaması</div></div>
     </div>
-    <div class="card"><h2>Öğrencilerin Toplam Rubrik Ortalamaları</h2><p class="sub">Vize ve final aşamalarında öğrenci bazlı toplam rubrik ortalamaları</p><div class="chartbox"><canvas id="findingsRubricTotals"></canvas></div></div>
+
     <div class="card" style="margin-top:16px">
-      <div class="finding"><strong>Rubrik ortalamaları:</strong> Öğrencilerin vize rubrik ortalaması ${mean(studentVizeMeans)} iken final rubrik ortalaması ${mean(studentFinalMeans)} olarak hesaplanmıştır. Bu artış, final aşamasında daha kontrollü ve tutarlı üretimler yapıldığını göstermektedir.</div>
-      <div class="finding"><strong>Zaman kavramları:</strong> Vize sürecinde öne çıkan kavramlar ${vTemporalKeywords.length ? vTemporalKeywords.map(([k])=>`“${k}”`).join(', ') : 'belirgin biçimde saptanamamıştır'}. Final sürecinde ise ${fTemporalKeywords.length ? fTemporalKeywords.map(([k])=>`“${k}”`).join(', ') : 'belirgin biçimde saptanamamıştır'}. Bu dağılım, öğrencilerin her iki aşamada da zaman katmanlarını görünür kılmaya çalıştığını göstermektedir.</div>
-      <div class="finding"><strong>En yüksek final ortalaması:</strong> Final rubrik değerlendirmesine göre en yüksek ortalamaya sahip öğrenci <strong>${ranking[0]?.id || '-'}</strong> olmuştur.</div>
-      <div class="finding"><strong>Yöntemsel not:</strong> Sistem, yaratıcılığı tek başına ölçen mutlak bir araç değil; kavramsal gelişim, mekânsal kurgu, atmosfer, teknolojik düzey ve görsel üretim ilişkisini görünür kılan çok boyutlu bir değerlendirme çerçevesidir.</div>
+      <h2>Deneysel Analiz Özeti</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kod</th><th>Vize Ana Kavramlar</th><th>Final Ana Kavramlar</th><th>Vize Ortalama Kelime</th><th>Final Ortalama Kelime</th><th>Vize Ortalama</th><th>Final Ortalama</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${r.vConcepts || '—'}</td><td>${r.fConcepts || '—'}</td><td>${r.vWords}</td><td>${r.fWords}</td><td>${r.vAvg}</td><td>${r.fAvg}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="finding"><strong>Kavramsal yoğunluk:</strong> Final istemlerinde ortalama kelime artışı <strong>${avgWordIncrease}</strong> olarak hesaplanmıştır. Bu durum, final aşamasında öğrencilerin betimlemelerini daha katmanlı kurduğunu göstermektedir.</div>
+      <div class="finding"><strong>Prompt niteliği:</strong> Araştırmacı puanlarına göre prompt niteliği ortalama <strong>${avgPromptIncrease}</strong> puan artmıştır. Bu artış, istemlerin daha açık, yönlendirici ve görsel üretime elverişli hâle geldiğini düşündürmektedir.</div>
+      <div class="finding"><strong>Zamansal ayrışma:</strong> Zamansal ayrışma ölçütündeki ortalama artış <strong>${avgTemporalIncrease}</strong> puandır. Öğrencilerin geçmiş, günümüz ve gelecek kurgularını final aşamasında daha belirgin ayırdığı görülmektedir.</div>
+      <div class="finding"><strong>Genel değerlendirme:</strong> En yüksek final ortalamasına sahip öğrenci <strong>${ranking[0]?.id || '-'}</strong> olmuştur. Sistem, yaratıcılığı tek başına ölçen mutlak bir araç değil; kavramsal gelişimi ve mekânsal kurgu düzeyini görünür kılan çok boyutlu bir değerlendirme panelidir.</div>
     </div>
   `;
-  charts.findingsRubricTotals = new Chart(document.getElementById('findingsRubricTotals'), {
-    type:'bar',
-    data:{labels, datasets:[{data:studentVizeMeans, label:'Vize Ortalama'},{data:studentFinalMeans, label:'Final Ortalama'}]},
-    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
-  });
 }
 
 function renderAll(){
