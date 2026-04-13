@@ -217,6 +217,11 @@ th{background:#fbf7f1;font-size:11px;color:var(--muted);text-transform:uppercase
 .rubric-title{font-size:20px;font-weight:700;color:var(--accent-dark)}
 .rubric-form{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;align-items:end;margin-top:12px}
 .small{font-size:12px;color:var(--muted);font-family:Arial,Helvetica,sans-serif}
+
+.score-box{
+  width:100%;padding:11px 12px;border:1px solid #dacbbb;border-radius:14px;background:#f8f2e7;
+  font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#5c4320;text-align:center
+}
 .finding{background:linear-gradient(180deg,#fff,#fbf7f1);border-left:4px solid var(--accent);padding:14px 16px;border-radius:16px;margin-bottom:12px;line-height:1.75}
 hr.sep{border:none;border-top:1px solid #eadfce;margin:16px 0}
 footer{
@@ -443,7 +448,7 @@ A dystopian futuristic castle inspired by Franz Kafka’s “The Castle”, imag
   },
   {
     id:'Ö-8', artworkName:'Buluşmak Üzere', artworkType:'Şiir',
-    tools:{text:['ChatGPT'], image:['Leonardo AI']},
+    tools:{text:['ChatGPT'], image:['Leonarda AI']},
     vize:{
       past:`Create a serene 1900s scene in the Aegean Sea, where the water is soft, clear, and white, symbolizing purity and peace. The underwater world is a dreamlike world, with fish and seaweed representing the continuity of life. It is early morning, and a person wants to dive into the water, symbolizing the desire for freedom and inner exploration. The scene reflects spiritual communion, with the presence of a loved one being felt rather than seen. The atmosphere is peaceful, mystical, and filled with inner serenity, reflecting the deep connection between nature and spirit in the 1800s." Water: Soft, clear, white, symbolizing purity. Underwater: Dreamy, with fish and seaweed, symbolizing continuity. Lighting: Soft morning light, peaceful atmosphere. Mood: Calm, contemplative, a spiritual connection to nature.`,
       present:`Create a serene and mystical underwater scene in the Aegean Sea at dawn in 2025. The calm, clear water glows with soft turquoise and pale blue, while the morning light casts golden reflections on the seabed. The focus should be on the surroundings: small fish swim in schools, seaweed flows gently, and smooth rocks and open corals rest naturally on the seabed. A woman in a modern white bikini can be seen, blending softly into the scene. The composition should emphasize the peaceful underwater landscape, the play of light, and the dreamlike atmosphere. Use a wide cinematic shot with no human figures in the middle. Prioritize mood, nature, and timeless serenity.`,
@@ -476,15 +481,15 @@ A dystopian futuristic castle inspired by Franz Kafka’s “The Castle”, imag
 ];
 
 const EMBEDDED_RUBRICS = {
-  'Ö-01': {vize:{conceptual:3,spatial:3,atmosphere:3,technology:2}, final:{conceptual:4,spatial:4,atmosphere:4,technology:3}},
-  'Ö-02': {vize:{conceptual:3,spatial:3,atmosphere:4,technology:2}, final:{conceptual:5,spatial:4,atmosphere:4,technology:4}},
-  'Ö-03': {vize:{conceptual:3,spatial:3,atmosphere:3,technology:2}, final:{conceptual:4,spatial:4,atmosphere:4,technology:4}},
-  'Ö-04': {vize:{conceptual:3,spatial:3,atmosphere:3,technology:3}, final:{conceptual:4,spatial:4,atmosphere:3,technology:4}},
-  'Ö-05': {vize:{conceptual:3,spatial:3,atmosphere:4,technology:2}, final:{conceptual:4,spatial:4,atmosphere:4,technology:3}},
-  'Ö-06': {vize:{conceptual:3,spatial:3,atmosphere:3,technology:3}, final:{conceptual:4,spatial:4,atmosphere:3,technology:4}},
-  'Ö-07': {vize:{conceptual:4,spatial:3,atmosphere:4,technology:3}, final:{conceptual:5,spatial:4,atmosphere:5,technology:4}},
-  'Ö-08': {vize:{conceptual:3,spatial:3,atmosphere:4,technology:1}, final:{conceptual:4,spatial:4,atmosphere:4,technology:2}},
-  'Ö-09': {vize:{conceptual:3,spatial:3,atmosphere:4,technology:3}, final:{conceptual:4,spatial:4,atmosphere:4,technology:4}}
+  'Ö-1': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-2': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-3': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-4': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-5': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-6': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-7': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-8': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}},
+  'Ö-9': {vize:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}, final:{conceptual:3,prompt:3,temporal:3,ai:3,creativity:3}}
 };
 function cloneEmbeddedStudents(){
   return JSON.parse(JSON.stringify(EMBEDDED_STUDENTS));
@@ -556,6 +561,15 @@ async function saveStudents(){ return true; }
 async function loadStudents(){ students = cloneEmbeddedStudents(); }
 function saveRubrics(){ return true; }
 function loadRubrics(){ rubrics = cloneEmbeddedRubrics(); }
+function resetRubricsToDefaults(){
+  rubrics = cloneEmbeddedRubrics();
+  destroyCharts();
+  renderRubric();
+  if(document.getElementById('tab-findings')?.classList.contains('active')){
+    renderFindings();
+  }
+}
+
 
 function destroyCharts(){ Object.values(charts).forEach(c=>{ try{ c.destroy(); }catch(e){} }); charts = {}; }
 
@@ -1293,7 +1307,7 @@ function renderCompare(){
     </div>
 
     <div class="grid g22" style="margin-top:16px">
-      <div class="card"><h2>Prompt Niteliği Karşılaştırması</h2><div class="chartbox"><canvas id="comparePromptChart"></canvas></div><p class="sub" style="margin-top:12px">Grafik, araştırmacı tarafından girilen rubrik puanlarına göre vize ve final prompt niteliği düzeylerini gösterir.</p></div>
+      <div class="card"><h2>Prompt Niteliği Karşılaştırması</h2><div class="chartbox"><canvas id="comparePromptChart"></canvas></div><p class="sub" style="margin-top:12px">Grafik, araştırmacı tarafından tanımlanan başlangıç rubrik puanlarına göre vize ve final prompt niteliği düzeylerini gösterir.</p></div>
       <div class="card"><h2>Zamansal Ayrışma Karşılaştırması</h2><div class="chartbox"><canvas id="compareTemporalChart"></canvas></div><p class="sub" style="margin-top:12px">Geçmiş, günümüz ve gelecek kurgularının ayrışma düzeyi rubrik puanları üzerinden sunulmuştur.</p></div>
     </div>
 
@@ -1330,27 +1344,31 @@ function renderCompare(){
 function rubricInputs(studentId, phase){
   ensureRubric(studentId);
   const r = rubrics[studentId][phase];
-  const total = RUBRIC_FIELDS.map(f=>Number(r[f.key])||0).filter(v=>v>0).reduce((a,b)=>a+b,0);
+  const total = RUBRIC_FIELDS.map(f=>Number(r[f.key])||0).reduce((a,b)=>a+b,0);
   return `
     <div class="rubric-form">
       ${RUBRIC_FIELDS.map(f=>`
         <div>
           <label>${f.label}</label>
-          <input type="number" min="1" max="5" value="${r[f.key] ?? ''}" onchange="updateRubric('${studentId}','${phase}','${f.key}',this.value)">
+          <input type="number" min="1" max="5" step="1" value="${Number(r[f.key]) || 3}"
+                 onchange="updateRubric('${studentId}','${phase}','${f.key}', this.value)">
         </div>
       `).join('')}
-      <div><label>Toplam Puan</label><input type="text" value="${total}" disabled></div>
-      <div><label>Ortalama Puan</label><input type="text" value="${avgRubric(r)}" disabled></div>
+      <div><label>Toplam Puan</label><div class="score-box">${total}</div></div>
+      <div><label>Ortalama Puan</label><div class="score-box">${avgRubric(r)}</div></div>
     </div>
   `;
 }
 
 function updateRubric(id, phase, key, value){
   ensureRubric(id);
-  rubrics[id][phase][key] = value === '' ? '' : Number(value);
-  saveRubrics();
-  renderVisible('tab-rubric');
-  renderVisible('tab-findings');
+  const num = Math.max(1, Math.min(5, Number(value || 0)));
+  rubrics[id][phase][key] = Number.isFinite(num) ? num : 3;
+  destroyCharts();
+  renderRubric();
+  if(document.getElementById('tab-findings')?.classList.contains('active')){
+    renderFindings();
+  }
 }
 
 function rubricPreviewBlock(setObj){
@@ -1389,7 +1407,11 @@ function renderRubric(){
   })).sort((a,b)=>b.finalAvg-a.finalAvg);
 
   el.innerHTML = `
-    <div class="notice">Rubrik puanları araştırmacı tarafından manuel olarak girilir. Ana kavramlar, istemlerin metinsel içeriğinden otomatik olarak çıkarılır ve değerlendirmeyi desteklemek için gösterilir. Nihai puanlama; kavramsal anlatım, prompt niteliği, zamansal ayrışma, yapay zekâ ile etkileşim ve mekânsal yaratıcılık ölçütleri üzerinden yapılır.</div>
+    <div class="notice">Rubrik puanları sayfayı ziyaret eden herkes tarafından bu oturum içinde değiştirilebilir. Aşağıdaki puanlar örnek öğrenci verileri için başlangıç değerleri olarak tanımlanmıştır. Yapılan değişiklikler grafiklere anlık yansır; ancak sayfa yenilendiğinde puanlar otomatik olarak araştırmacı tarafından tanımlanan başlangıç değerlerine geri döner.</div>
+
+    <div class="actions" style="margin-top:12px;margin-bottom:4px">
+      <button class="btn ghost" onclick="resetRubricsToDefaults()">Başlangıç Puanlarına Dön</button>
+    </div>
 
     <div class="card" style="margin-top:16px">
       <h2>Öğrenci Rubrik Ortalamaları</h2>
@@ -1462,7 +1484,7 @@ function renderFindings(){
   const avgTemporalIncrease = mean(rows.map(r=>r.fTemporal-r.vTemporal)).toFixed(2);
 
   el.innerHTML = `
-    <div class="notice">Aşağıdaki bulgular; otomatik ana kavram çıkarımı, prompt uzunluğu verileri ve araştırmacı tarafından girilen rubrik puanları birlikte değerlendirilerek üretilmiştir.</div>
+    <div class="notice">Aşağıdaki bulgular; otomatik ana kavram çıkarımı, prompt uzunluğu verileri ve araştırmacı tarafından tanımlanan başlangıç rubrik puanları birlikte değerlendirilerek üretilmiştir.</div>
 
     <div class="grid g4" style="margin-top:16px">
       <div class="stat"><div class="v">${avgWordIncrease}</div><div class="k">Ortalama Kelime Artışı</div></div>
