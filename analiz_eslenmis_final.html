@@ -1158,7 +1158,20 @@ function renderArtworks(){
     </div>`;
   charts.artChart = new Chart(document.getElementById('artChart'), {
     type:'bar',
-    data:{labels:Object.keys(counts), datasets:[{data:Object.values(counts), label:'Öğrenci'}]},
+    data:{labels:Object.keys(counts), datasets:[
+  {
+    data:Object.values(counts),
+    label:'Öğrenci',
+    backgroundColor:[
+      '#7c1517',
+      '#49423c',
+      '#7c1517',
+      '#49423c'
+    ],
+    borderColor:'#333',
+    borderWidth:1
+  }
+]},
     options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
   });
 }
@@ -1188,12 +1201,32 @@ function renderTools(){
     </div>`;
   charts.toolsChart = new Chart(document.getElementById('toolsChart'), {
     type:'bar',
-    data:{labels:Object.keys(freq), datasets:[{data:Object.values(freq), label:'Kullanım'}]},
+    data:{labels:Object.keys(freq), const colors = ['#7c1517', '#49423c'];
+
+datasets:[
+  {
+    data:Object.values(counts),
+    label:'Öğrenci',
+    backgroundColor:Object.keys(counts).map((_, i) => colors[i % 2]),
+    borderColor:'#333',
+    borderWidth:1
+  }
+]},
     options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
   });
   charts.toolsPie = new Chart(document.getElementById('toolsPie'), {
     type:'pie',
-    data:{labels:Object.keys(groups), datasets:[{data:Object.values(groups)}]},
+    data:{labels:Object.keys(groups), const colors = ['#7c1517', '#49423c'];
+
+datasets:[
+  {
+    data:Object.values(counts),
+    label:'Öğrenci',
+    backgroundColor:Object.keys(counts).map((_, i) => colors[i % 2]),
+    borderColor:'#333',
+    borderWidth:1
+  }
+]},
     options:{responsive:true, maintainAspectRatio:false}
   });
 }
