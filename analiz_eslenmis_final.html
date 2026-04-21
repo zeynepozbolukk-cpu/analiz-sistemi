@@ -329,6 +329,11 @@ let rubrics = {};
 let editingId = null;
 let charts = {};
 
+const COLOR_PRIMARY = '#7c1517';
+const COLOR_SECONDARY = '#49423c';
+const GRID_COLOR = '#e6ddd2';
+const ALT_COLORS = [COLOR_PRIMARY, COLOR_SECONDARY];
+
 const EMBEDDED_STUDENTS = [
   {
     id:'Ö-1', artworkName:"Howl's Moving Castle", artworkType:'Film',
@@ -1172,7 +1177,7 @@ function renderArtworks(){
     borderWidth:1
   }
 ]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}}, x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}}}
   });
 }
 
@@ -1201,33 +1206,43 @@ function renderTools(){
     </div>`;
   charts.toolsChart = new Chart(document.getElementById('toolsChart'), {
     type:'bar',
-    data:{labels:Object.keys(freq), const colors = ['#7c1517', '#49423c'];
-
-datasets:[
-  {
-    data:Object.values(counts),
-    label:'Öğrenci',
-    backgroundColor:Object.keys(counts).map((_, i) => colors[i % 2]),
-    borderColor:'#333',
-    borderWidth:1
-  }
-]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+    data:{
+      labels:Object.keys(freq),
+      datasets:[{
+        label:'Frekans',
+        data:Object.values(freq),
+        backgroundColor:Object.keys(freq).map((_, i) => ALT_COLORS[i % ALT_COLORS.length]),
+        borderColor:Object.keys(freq).map((_, i) => ALT_COLORS[i % ALT_COLORS.length]),
+        borderWidth:1,
+        borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}},
+        x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}
+      }
+    }
   });
   charts.toolsPie = new Chart(document.getElementById('toolsPie'), {
     type:'pie',
-    data:{labels:Object.keys(groups), const colors = ['#7c1517', '#49423c'];
-
-datasets:[
-  {
-    data:Object.values(counts),
-    label:'Öğrenci',
-    backgroundColor:Object.keys(counts).map((_, i) => colors[i % 2]),
-    borderColor:'#333',
-    borderWidth:1
-  }
-]},
-    options:{responsive:true, maintainAspectRatio:false}
+    data:{
+      labels:Object.keys(groups),
+      datasets:[{
+        data:Object.values(groups),
+        backgroundColor:[COLOR_PRIMARY, COLOR_SECONDARY, '#8f857c'],
+        borderColor:'#ffffff',
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:COLOR_SECONDARY}}}
+    }
   });
 }
 
@@ -1292,8 +1307,26 @@ function renderPromptSection(kind){
 
   const makeBar=(id,data)=> new Chart(document.getElementById(id), {
     type:'bar',
-    data:{labels:data.map(x=>x[0]), datasets:[{data:data.map(x=>x[1]), label:'Frekans'}]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+    data:{
+      labels:data.map(x=>x[0]),
+      datasets:[{
+        data:data.map(x=>x[1]),
+        label:'Frekans',
+        backgroundColor:data.map((_, i) => ALT_COLORS[i % ALT_COLORS.length]),
+        borderColor:data.map((_, i) => ALT_COLORS[i % ALT_COLORS.length]),
+        borderWidth:1,
+        borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}},
+        x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}
+      }
+    }
   });
   charts[kind+'PastChart']=makeBar(`${kind}PastChart`, pastTop);
   charts[kind+'PresentChart']=makeBar(`${kind}PresentChart`, presentTop);
@@ -1363,13 +1396,41 @@ function renderCompare(){
 
   charts.comparePromptChart = new Chart(document.getElementById('comparePromptChart'), {
     type:'bar',
-    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.vPrompt)},{label:'Final', data:rows.map(r=>r.fPrompt)}]},
-    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
+    data:{
+      labels:rows.map(r=>r.id),
+      datasets:[
+        {label:'Vize', data:rows.map(r=>r.vPrompt), backgroundColor:COLOR_SECONDARY, borderColor:COLOR_SECONDARY, borderWidth:1, borderRadius:5},
+        {label:'Final', data:rows.map(r=>r.fPrompt), backgroundColor:COLOR_PRIMARY, borderColor:COLOR_PRIMARY, borderWidth:1, borderRadius:5}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:COLOR_SECONDARY}}},
+      scales:{
+        y:{beginAtZero:true, max:5, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}},
+        x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}
+      }
+    }
   });
   charts.compareTemporalChart = new Chart(document.getElementById('compareTemporalChart'), {
     type:'bar',
-    data:{labels:rows.map(r=>r.id), datasets:[{label:'Vize', data:rows.map(r=>r.vTemporal)},{label:'Final', data:rows.map(r=>r.fTemporal)}]},
-    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
+    data:{
+      labels:rows.map(r=>r.id),
+      datasets:[
+        {label:'Vize', data:rows.map(r=>r.vTemporal), backgroundColor:COLOR_SECONDARY, borderColor:COLOR_SECONDARY, borderWidth:1, borderRadius:5},
+        {label:'Final', data:rows.map(r=>r.fTemporal), backgroundColor:COLOR_PRIMARY, borderColor:COLOR_PRIMARY, borderWidth:1, borderRadius:5}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:COLOR_SECONDARY}}},
+      scales:{
+        y:{beginAtZero:true, max:5, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}},
+        x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}
+      }
+    }
   });
 }
 
@@ -1482,8 +1543,22 @@ function renderRubric(){
   if(chartCanvas){
     charts.rubricStudentChart = new Chart(chartCanvas, {
       type:'bar',
-      data:{labels:students.map(s=>s.id), datasets:[{data:studentVizeMeans, label:'Vize Ortalama'},{data:studentFinalMeans, label:'Final Ortalama'}]},
-      options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true, max:5}}}
+      data:{
+        labels:students.map(s=>s.id),
+        datasets:[
+          {data:studentVizeMeans, label:'Vize Ortalama', backgroundColor:COLOR_SECONDARY, borderColor:COLOR_SECONDARY, borderWidth:1, borderRadius:5},
+          {data:studentFinalMeans, label:'Final Ortalama', backgroundColor:COLOR_PRIMARY, borderColor:COLOR_PRIMARY, borderWidth:1, borderRadius:5}
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:COLOR_SECONDARY}}},
+        scales:{
+          y:{beginAtZero:true, max:5, ticks:{stepSize:1, color:COLOR_SECONDARY}, grid:{color:GRID_COLOR}},
+          x:{ticks:{color:COLOR_SECONDARY}, grid:{display:false}}
+        }
+      }
     });
   }
 }
