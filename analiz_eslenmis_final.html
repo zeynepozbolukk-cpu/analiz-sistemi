@@ -786,6 +786,126 @@ const timeLex = {
   future:['gelecek','ütopik','spekülatif','dijital','otonom','adaptif','holografik','akıllı','future','utopian','speculative','futuristic','smart','2325','2300','3000']
 };
 
+
+// Öğrenci bazlı manuel anahtar kelimeler
+// Rubrik önizlemesindeki etiketler artık prompttan otomatik çıkarılmak yerine öncelikle bu listeden gelir.
+const studentKeywordMap = {
+  'Ö-1': {
+    vize: {
+      past: ['Steampunk','Yürüyen kale','Kaotik','Düşük'],
+      present: ['Steampunk','Yürüyen kale','Fantastik','Orta'],
+      future: ['Steampunk','Yürüyen kale','Fütüristik','İleri']
+    },
+    final: {
+      past: ['Tarihsel','Açık dağlık','Büyülü','Düşük'],
+      present: ['Çağdaş','Dikey kentsel','Kontrollü','Orta'],
+      future: ['Distopik','Kapalı statik','Kasvetli','İlkel']
+    }
+  },
+  'Ö-2': {
+    vize: {
+      past: ['Adanmış sevgi','Gotik katedral','Nostaljik','İlkel'],
+      present: ['Belleğe direnç','Kentsel','Coşkulu','Orta'],
+      future: ['Duygusal anıt','Yüzen yapı','Umutlu','İleri']
+    },
+    final: {
+      past: ['Tarihsel bağ','Roma mimarisi','Tarihsel ihtişam','İlkel'],
+      present: ['Kimlik sürekliliği','Banliyö sokağı','Sinematik sıcaklık','Orta'],
+      future: ['Teknolojik dönüşüm','Mega yapı','Distopik','İleri']
+    }
+  },
+  'Ö-3': {
+    vize: {
+      past: ['Klasik idealizm','Simetrik köşe','Otoriter','İlkel'],
+      present: ['Kentsel canlılık','Açık sokak','Canlı','Orta'],
+      future: ['Teknolojik evrim','Akışkan kentsel','Kinetik','İleri']
+    },
+    final: {
+      past: ['Statü sembolü','Roma köşesi','Nostaljik sıcaklık','İlkel'],
+      present: ['Sanatsal kimlik','Sanatçı sokağı','Empresyonist doku','Orta'],
+      future: ['Teknoloji füzyonu','Kontrollü kentsel','Dinamik sanat','İleri']
+    }
+  },
+  'Ö-4': {
+    vize: {
+      past: ['Zamansal çoğulluk','Sarmal','Surreal','İleri'],
+      present: ['Zamansal çoğulluk','Sarmal','Kaotik','İleri'],
+      future: ['Zihinsel hapis','Labirentik','Bunaltıcı','Gelişmiş']
+    },
+    final: {
+      past: ['Sanatsal yorum','Kapalı','Duygusal','Orta'],
+      present: ['Birikimli tarih','Dağınık kapalı','Nostaljik','İlkel'],
+      future: ['Dönüşüm','Organik mekanik','Distopik','İleri']
+    }
+  },
+  'Ö-5': {
+    vize: {
+      past: ['Büyülü','Ortak Salon','Dramatik','Düşük'],
+      present: ['Büyülü','Ortak Salon','Dramatik','Orta'],
+      future: ['Büyülü','Ortak Salon','Dramatik','Sınırlı']
+    },
+    final: {
+      past: ['Tarihsel','Ortak Salon','Viktorya','İlkel'],
+      present: ['Çağdaş','Ortak Salon','Teknolojik','Gelişmiş'],
+      future: ['Spekülatif','Ortak Salon','Holografik','İleri']
+    }
+  },
+  'Ö-6': {
+    vize: {
+      past: ['Otorite','Dikey labirentik','Baskıcı','İlkel'],
+      present: ['Gözetim','Yatay labirentik','Soğuk','Gelişmiş'],
+      future: []
+    },
+    final: {
+      past: ['Otorite','Dikey labirentik','Baskıcı','İlkel'],
+      present: ['Gözetim','Yatay labirentik','Soğuk','Orta'],
+      future: ['Kafkaesk','Kule','Yıkıntılı','İleri']
+    }
+  },
+  'Ö-7': {
+    vize: {
+      past: ['Viktorya','Çalışma odası','Dramatik','Düşük'],
+      present: ['Modern','Londra dairesi','Entelektüel','Gelişmiş'],
+      future: ['Fütüristik','Çalışma odası','Siber','İleri']
+    },
+    final: {
+      past: ['Viktorya','Oturma odası','Sıcak','Düşük'],
+      present: ['Modern','Yaşanmış oda','Doğal','Gelişmiş'],
+      future: ['Fütüristik','Holografik oda','Siber','İleri']
+    }
+  },
+  'Ö-8': {
+    vize: {
+      past: ['Ruhsal birlik','Açık su','Huzurlu','İlkel'],
+      present: ['Doğa uyumu','Açık su','Mistik','İlkel'],
+      future: ['Medeniyet kaybı','Açık harabe','Issız','Düşük']
+    },
+    final: {
+      past: ['Ruhsal birlik','Yarı kapalı doğal','Şiirsel','İlkel'],
+      present: ['Doğa-insan uyumu','Yarı açık minimalist','Berrak','Orta'],
+      future: ['Geçmişten inşa','Kapalı organik','Spekülatif','İleri']
+    }
+  },
+  'Ö-9': {
+    vize: {
+      past: ['İlahi yargı','Dikey hiyerarşik','Dramatik','İlkel'],
+      present: [],
+      future: ['Simüle yargı','Dijital','Distopik','İleri']
+    },
+    final: {
+      past: ['Tarihsel dışlama','Dikey hiyerarşik','Doğal','İlkel'],
+      present: ['Çağdaş yargı','Dikey hiyerarşik','Teknolojik','Orta'],
+      future: ['Makine yargısı','Orbital kapalı','Enerji odaklı','İleri']
+    }
+  }
+};
+
+function getKeywords(studentId, phase, period, fallbackText='', maxCount=6){
+  const manual = studentKeywordMap?.[studentId]?.[phase]?.[period];
+  if(Array.isArray(manual)) return manual.slice(0, maxCount);
+  return extractConcepts(fallbackText, maxCount);
+}
+
 function tokenize(text){
   return (text||'')
     .toLowerCase()
@@ -1465,13 +1585,14 @@ function updateRubric(id, phase, key, value){
   }
 }
 
-function rubricPreviewBlock(setObj){
+function rubricPreviewBlock(student, phase){
+  const setObj = student?.[phase] || {};
   const imgs = setObj.images || {past:'',present:'',future:''};
   return `
     <div class="preview-grid">
       ${['past','present','future'].map(period=>{
         const promptText = setObj[period] || '';
-        const concepts = extractConcepts(promptText, 6);
+        const concepts = getKeywords(student.id, phase, period, promptText, 6);
         return `
       <div class="preview">
         <h4>${period==='past'?'Geçmiş':period==='present'?'Günümüz':'Gelecek'}</h4>
@@ -1524,7 +1645,7 @@ function renderRubric(){
       ${students.map(s=>`
         <div class="rubric-card">
           <div class="rubric-head"><div><div class="rubric-title">${s.id}</div><div class="small">${s.artworkName}</div></div></div>
-          ${rubricPreviewBlock(s.vize)}
+          ${rubricPreviewBlock(s, 'vize')}
           ${rubricInputs(s.id,'vize')}
         </div>`).join('')}
     </div>
@@ -1533,7 +1654,7 @@ function renderRubric(){
       ${students.map(s=>`
         <div class="rubric-card">
           <div class="rubric-head"><div><div class="rubric-title">${s.id}</div><div class="small">${s.artworkName}</div></div></div>
-          ${rubricPreviewBlock(s.final)}
+          ${rubricPreviewBlock(s, 'final')}
           ${rubricInputs(s.id,'final')}
         </div>`).join('')}
     </div>
